@@ -1,0 +1,16 @@
+{
+  "orgName": "UK GDS Frontend",
+  "edition": "Developer",
+  "features": ["Communities"],
+  "settings": {
+    "communitiesSettings": {
+      "enableNetworksEnabled": true
+    },
+    "experienceBundleSettings": {
+      "enableExperienceBundleMetadata": true
+    },
+    "mobileSettings": {
+      "enableS1EncryptedStoragePref2": false
+    }
+  }
+}
