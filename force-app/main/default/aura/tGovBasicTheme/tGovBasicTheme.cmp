@@ -1,13 +1,3 @@
-<!--
-  @description       :
-  @author            : tbasri@salesforce.com
-  @group             :
-  @last modified on  : 08-08-2022
-  @last modified by  : dominic.butler@salesforce.com
-  Modifications Log
-  Ver   Date         Author                  Modification
-  1.0   05-19-2022   tbasri@salesforce.com   Initial Version
--->
 <aura:component implements="forceCommunity:themeLayout" access="global" description="govTheme">
 
   <aura:handler name="init" value="{!this}" action="{!c.init}" />
@@ -20,12 +10,18 @@
   <div>
     <div class="themeContainer">
       
-      <header role="banner" aura:id="themeHeader">{!v.header}
+      <header role="banner" aura:id="themeHeader">
+        <c:govSkipLink></c:govSkipLink>
+        <c:govHeader></c:govHeader>
+        {!v.header}
       </header>
 
       <div id="main" role="main">{!v.body}</div>
 
-      <footer aura:id="footer" role="footer" class="">{!v.footer}</footer>
+      <footer aura:id="footer" role="footer" class="">
+        <c:govFooter></c:govFooter>
+        {!v.footer}
+      </footer>
     </div>
   </div>
 </aura:component>
