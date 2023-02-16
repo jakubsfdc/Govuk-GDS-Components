@@ -17,7 +17,7 @@
     <div class="themeContainer">
       
       <header role="banner" >
-        <c:govSkipLink></c:govSkipLink>
+        <c:govSkipLink targetAnchor="#main"></c:govSkipLink>
         {!v.header}
       </header>
 
