@@ -105,14 +105,14 @@ export default class GovNavigationButtons extends LightningElement {
 
     /**
     // focusOnErroBox(){
-    //     console.log('inside focusOnErrorBox');
+    //     // console.log('inside focusOnErrorBox');
     //     let errorLWC = this.template.querySelector('c-gov-error-messages');
-    //     console.log('errorLWC:'+ errorLWC);
+    //     // console.log('errorLWC:'+ errorLWC);
     //     //let link = otherLWC.shadowRoot.querySelector('#errorSummaryTitle'); // by ID
     //     let link = errorLWC.shadowRoot.querySelector('a[name="errorSummaryTitle"]');
-    //     console.log('link:'+ link);
+    //     // console.log('link:'+ link);
     //     link.focus();
-    //     console.log('Focused on link');
+    //     // console.log('Focused on link');
         
 
   <lightning-input data-field="username" label="Username"></lightning-input>
@@ -127,10 +127,10 @@ link.focus();
 
        
 
-        // console.log('// NEXT or FINISH pressed -- inside handleClick:');
+        // // console.log('// NEXT or FINISH pressed -- inside handleClick:');
         // var elementsToSelect = document.getElementsByName("errorSummaryTitle");
 
-        // console.log('elementsToSelect[0]:'+elementsToSelect[0]);
+        // // console.log('elementsToSelect[0]:'+elementsToSelect[0]);
         // elementsToSelect[0].focus();
 
         // const component = {};
@@ -145,17 +145,17 @@ link.focus();
 
         // if(component){
         //     let tagName = component.componentType; // UXGOVUK-GOV-TEXT-INPUT or UXGOVUK-GOV-DATE
-        //     console.log('tagName:'+tagName);
+        //     // console.log('tagName:'+tagName);
         //     var allElementsByTagName = document.getElementsByTagName(tagName);
-        //     console.log('allElementsByTagName:'+allElementsByTagName);
+        //     // console.log('allElementsByTagName:'+allElementsByTagName);
         //     let selectorType = component.componentSelect;  // INPUT - maybe not needed to pass through if assumed (hardcoded?)
         //     var elementToSelect = null;
-        //     console.log('allElementsByTagName.length:'+allElementsByTagName.length);
+        //     // console.log('allElementsByTagName.length:'+allElementsByTagName.length);
         //     for (var i=0, max=allElementsByTagName.length; i < max; i++) {
         //         var element = allElementsByTagName[i];
         //         var allElementsWithSelectorType = element.getElementsByTagName(selectorType);
-        //         console.log('element.length:'+element);
-        //         console.log('allElementsWithSelectorType:'+allElementsWithSelectorType);
+        //         // console.log('element.length:'+element);
+        //         // console.log('allElementsWithSelectorType:'+allElementsWithSelectorType);
         //         for (var j=0, index=allElementsWithSelectorType.length; j < index; j++) {
         //             if (allElementsWithSelectorType[j].id ==  targetId) {
         //                 elementToSelect = allElementsWithSelectorType[j];
@@ -185,7 +185,7 @@ link.focus();
                 component.isValid = false;
                 //this.focusOnErroBox();
             })
-            //console.log('NAVIGATION_BUTTONS: Sending validation message ' + this.fieldId );
+            // console.log('NAVIGATION_BUTTONS: Sending validation message ' + this.fieldId );
             publish(this.messageContext, VALIDATE_MC, { componentId: this.fieldId });
         } else if(this.action === 'NEXT' && this.availableActions.find(action => action === 'NEXT')) {
             const event = new FlowNavigationNextEvent();
@@ -206,10 +206,28 @@ link.focus();
             const event = new FlowNavigationBackEvent();
             this.dispatchEvent(event);
         } else {
-            // console.log('====================== ');
+            // add validation for Actions other than NEXT and FINISH
+            // console.log('==========================================');
+            // console.log('add validation for Actions other than NEXT and FINISH');
+            if(this.components.length > 0){
+                // console.log('List component:');
+                this.components.forEach(component => {
+                    // console.log('component:');
+                    // console.log(component);
+
+                    // console.log('component.componentId:');
+                    // console.log(component.id);
+                    // console.log(component.isValid);
+                    // console.log(component.error);
+
+                    component.isValid = false;
+                })
+                // console.log('NAVIGATION_BUTTONS: Sending validation message ' + this.fieldId );
+                publish(this.messageContext, VALIDATE_MC, { componentId: this.fieldId });
+            }
             // console.log('this.action:' + this.action);
-            const event = new FlowNavigationNextEvent();
-            this.dispatchEvent(event);
+            //const event = new FlowNavigationNextEvent();
+            //this.dispatchEvent(event);
         }
     }
 
@@ -243,32 +261,32 @@ link.focus();
 
 
     handleRegistrationMessage(message) {
-        //console.log(`NAVIGATION_BUTTONS: Received registration message from component ${JSON.stringify(message)}`);
+        //// console.log(`NAVIGATION_BUTTONS: Received registration message from component ${JSON.stringify(message)}`);
         const component = {};
         component.id = message.componentId;
         component.isValid = true;
         component.error = "";
         this.components.push(component);
-        //console.log(`NAVIGATION_BUTTONS: Component are ${JSON.stringify(this.components)}`);
+        //// console.log(`NAVIGATION_BUTTONS: Component are ${JSON.stringify(this.components)}`);
     }
 
     handleValidationUpdate(message) {
-        //console.log(`NAVIGATION_BUTTONS: Received validation state message from component ${JSON.stringify(message)}`);
+        //// console.log(`NAVIGATION_BUTTONS: Received validation state message from component ${JSON.stringify(message)}`);
         // update the component that sent the message
         const component = this.components.find(component => component.id === message.componentId);
         if(component) {
-            //console.log(`NAVIGATION_BUTTONS: Setting component ${component.id} to ${message.isValid}`);
+            // console.log(`NAVIGATION_BUTTONS: Setting component ${component.id} to ${message.isValid}`);
             component.isValid = message.isValid;
         } else {
-            //console.log(`NAVIGATION_BUTTONS: This shouldn't really happen but creating new component ${message.componentId} with status ${message.isValid}`);
+            // console.log(`NAVIGATION_BUTTONS: This shouldn't really happen but creating new component ${message.componentId} with status ${message.isValid}`);
             this.components.push({id:message.componentId,isValid:message.isValid});
         }
-        //console.log(`NAVIGATION_BUTTONS: components are ${JSON.stringify(this.components)}`);
+        // console.log(`NAVIGATION_BUTTONS: components are ${JSON.stringify(this.components)}`);
         // check to see if we have all valid components
         const invalidComponents = this.components.filter(component => component.isValid === false);
         
         if(invalidComponents.length === 0) {
-            //console.log(`NAVIGATION_BUTTONS: All components are valid, moving along, action is ${this.action}`);
+            //// console.log(`NAVIGATION_BUTTONS: All components are valid, moving along, action is ${this.action}`);
             if (this.action === 'NEXT' &&
                 this.availableActions.find(action => action === 'NEXT')) {
                 const event = new FlowNavigationNextEvent();
@@ -281,9 +299,16 @@ link.focus();
                 this.availableActions.find(action => action === 'FINISH')) {
                 const event = new FlowNavigationFinishEvent();
                 this.dispatchEvent(event);
+            } 
+            else {
+                // catch all for actions other than NEXT and FINISH to progress forward
+                const event = new FlowNavigationNextEvent();
+                this.dispatchEvent(event);
             }
         } else {
-            //console.log(`NAVIGATION_BUTTONS: There are invalid components.`);
+            // console.log(`NAVIGATION_BUTTONS: There are invalid components.`);
+            // console.log('invalidComponents:');
+            // console.log(invalidComponents);
         }
     }
 
