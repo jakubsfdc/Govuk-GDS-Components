@@ -222,7 +222,7 @@ export default class GovTextInput extends LightningElement {
         }
         publish(this.messageContext, VALIDATION_STATE_MC, {
             componentId: this.textFieldId,
-            componentType: 'C-GOV-TEXT-INPUT',
+            componentType: 'UXGOVUK-GOV-TEXT-INPUT',
             componentSelect: 'INPUT',
             isValid: !this.hasErrors,
             error: this.errorMessage
