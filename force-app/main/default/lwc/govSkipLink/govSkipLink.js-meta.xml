@@ -10,7 +10,7 @@
     </targets>
     <targetConfigs>
         <targetConfig targets="lightningCommunity__Default">
-            <property name="label" type="String" label="Header Label" description="The text displayed on the link" default="Skip to main content"/>
+            <property name="targetAnchor" type="String" label="Target Anchor" description="The HTML element ID of the target" default="#main"/>
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
