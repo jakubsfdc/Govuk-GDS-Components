@@ -143,10 +143,15 @@ export default class GovNavigationButtons extends LightningElement {
             const event = new FlowNavigationBackEvent();
             this.dispatchEvent(event);
         } else {
-            // console.log('====================== ');
-            // console.log('this.action:' + this.action);
-            const event = new FlowNavigationNextEvent();
-            this.dispatchEvent(event);
+            if(this.components.length > 0){
+                // console.log('====================== ');
+                // console.log('this.action:' + this.action);
+                this.components.forEach(component => {
+                    component.isValid = false;
+                })
+                publish(this.messageContext, VALIDATE_MC, { componentId: this.fieldId });
+            }
+            
         }
     }
 
@@ -217,6 +222,10 @@ export default class GovNavigationButtons extends LightningElement {
             } else if (this.action === 'FINISH' &&
                 this.availableActions.find(action => action === 'FINISH')) {
                 const event = new FlowNavigationFinishEvent();
+                this.dispatchEvent(event);
+            } else {
+                // catch all for actions other than NEXT and FINISH to progress forward
+                const event = new FlowNavigationNextEvent();
                 this.dispatchEvent(event);
             }
         } else {
