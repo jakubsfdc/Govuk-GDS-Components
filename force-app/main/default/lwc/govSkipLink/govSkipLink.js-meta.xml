@@ -5,7 +5,7 @@
     <isExposed>true</isExposed>
     <masterLabel>Gov UK Skip Link</masterLabel>
     <targets>
-        <target>lightningCommunity__Page</target>
+        <!-- <target>lightningCommunity__Page</target> -->
         <target>lightningCommunity__Default</target>
     </targets>
     <targetConfigs>
