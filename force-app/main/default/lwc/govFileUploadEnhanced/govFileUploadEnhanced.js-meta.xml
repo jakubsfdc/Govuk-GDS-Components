@@ -1,5 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>56.0</apiVersion>
-    <isExposed>false</isExposed>
+    <isExposed>true</isExposed>
+    <description>This help users select and upload a file over 3MB.</description>
+    <masterLabel>Gov UK File Upload Enhanced</masterLabel>
+    <targets>
+        <target>lightning__FlowScreen</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <property
+                name="label"
+                type="String"
+                label='File Upload Label'
+                description="The label for on the file upload component."
+            />
+            <property
+                name="uploadedlabel"
+                type="String"
+                label='Uploaded File List Label'
+                description="The text on the list of files uploaded. You might find that you prefer to leave this blank, as the UX is obvious."
+                role="inputOnly"
+            />
+            <property
+                name="allowMultiple"
+                type="Boolean"
+                label="Allow Multiple Files"
+                description="Allow the user to upload multiple files. If this is not TRUE, then once the user uploads one file, the file upload component will not allow any additional files to be uploaded."
+            />
+           
+        </targetConfig>
+    </targetConfigs>
+
+
 </LightningComponentBundle>
