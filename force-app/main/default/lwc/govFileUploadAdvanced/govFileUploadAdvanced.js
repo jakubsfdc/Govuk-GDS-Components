@@ -364,6 +364,14 @@ this.displayExistingFiles();
             objFiles.push(objFile);
 
             versIds.push(file.contentVersionId);
+
+            // var reader = new FileReader();
+            // reader.onload = function(event) {
+            // var dataURL = event.target.result;
+            // var mimeType = dataURL.split(",")[0].split(":")[1].split(";")[0];
+            // alert(mimeType);
+            // };
+            // reader.readAsDataURL(objFile);
         })
         // console.log('objFiles:' + objFiles + ' count:' + objFiles.length);
         // console.log('versIds:' + versIds + ' count:' + versIds.length);
