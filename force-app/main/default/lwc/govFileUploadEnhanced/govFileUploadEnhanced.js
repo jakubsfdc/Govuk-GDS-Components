@@ -1,10 +1,13 @@
 import { LightningElement, track, api, wire} from 'lwc';
-import encrypt from '@salesforce/apex/FileUploadAdvancedHelper.encrypt';
 import uploadUiOverride from '@salesforce/resourceUrl/uploadUiOverride';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { loadStyle } from 'lightning/platformResourceLoader';
 import { FlowAttributeChangeEvent } from 'lightning/flowSupport';
-
+import getKey from '@salesforce/apex/FileUploadAdvancedHelper.getKey';
+import encrypt from '@salesforce/apex/FileUploadAdvancedHelper.encrypt';
+import createContentVers from '@salesforce/apex/FileUploadAdvancedHelper.createContentVers';
+import appendDataToContentVersion from '@salesforce/apex/FileUploadAdvancedHelper.appendDataToContentVersion';
+import createContentDocLink from '@salesforce/apex/FileUploadAdvancedHelper.createContentDocLink';
 import deleteContentDoc from '@salesforce/apex/FileUploadAdvancedHelper.deleteContentDoc';
 import getExistingFiles from '@salesforce/apex/FileUploadAdvancedHelper.getExistingFiles';
 import updateFileName from '@salesforce/apex/FileUploadAdvancedHelper.updateFileName';
@@ -23,11 +26,28 @@ export default class GovFileUploadEnhanced extends LightningElement {
     @api allowMultiple;
     @api overriddenFileName;    
     @api uploadedlabel;
+    @api required;
+    @api requiredMessage;
+    @api sessionKey;
+    @api uploadedFileNames;
+    @api contentDocumentIds;
+    @api contentVersionIds;
+    @api recordId;
+    numberOfFilesToUpload = 0;
+    loading = false;
 
     disabled = false;
-    
-    
 
+    key;
+    @wire(getKey)
+    wiredKey({error,data}){
+        if(data){
+            this.key = data;
+        }
+        else if (error){
+            this.showErrors(this.reduceErrors(error).toString());
+        }
+    }
 
     value;
     @wire(encrypt,{recordId: '$recordId', encodedKey: '$key'})
@@ -40,10 +60,6 @@ export default class GovFileUploadEnhanced extends LightningElement {
         }
     }
 
-    // get allowMultiple() {
-    //     return cbToBool(this.cb_allowMultiple);
-    // }
-
     get formGroupClass() {
         let groupClass = "govuk-form-group ";
         groupClass = (this.hasErrors) ? groupClass + " govuk-form-group--error" : groupClass;
@@ -53,24 +69,46 @@ export default class GovFileUploadEnhanced extends LightningElement {
     renderedCallback() {
 
         this.displayExistingFiles();
-               
-                // loading uploadUiOverride
-                // Promise.all([
-                //     loadStyle(this, uploadUiOverride)
-                // ])
-        
         
                 if(this.isCssLoaded) return
                 this.isCssLoaded = true;
+                
                 loadStyle(this,uploadUiOverride).then(()=>{
-                    // console.log('loaded');
+                    
                 })
                 .catch(error=>{
-                    // console.log('error to load');
+                    this.showErrors(this.reduceErrors(error).toString());
                 });
         
                
         
+    }
+
+    connectedCallback(){
+
+
+        
+        let cachedSelection = sessionStorage.getItem(this.sessionKey);
+        if(cachedSelection){
+            this.processFiles(JSON.parse(cachedSelection));
+        } else if(this.recordId && this.renderExistingFiles) {
+            getExistingFiles({recordId: this.recordId})
+                .then((files) => {
+                    if(files != undefined && files.length > 0){
+                        this.processFiles(files);
+                    } else {
+                        this.communicateEvent(this.docIds,this.versIds,this.fileNames,this.objFiles);
+                    }
+                })
+                .catch((error) => {
+                    this.showErrors(this.reduceErrors(error).toString());
+                })
+        } else {
+            this.communicateEvent(this.docIds,this.versIds,this.fileNames,this.objFiles);
+            
+        }
+
+        this.displayExistingFiles();
     }
 
     displayExistingFiles(){
@@ -94,10 +132,9 @@ export default class GovFileUploadEnhanced extends LightningElement {
     }
 
     handleUploadFinished(files) {
-        // console.log('Inside handleUploadFinished');
+
         let objFiles = [];
         let versIds = [];
-
 
         files.forEach(file => {
             if(file.contentVersionId){
@@ -124,16 +161,7 @@ export default class GovFileUploadEnhanced extends LightningElement {
 
             versIds.push(file.contentVersionId);
 
-            // var reader = new FileReader();
-            // reader.onload = function(event) {
-            // var dataURL = event.target.result;
-            // var mimeType = dataURL.split(",")[0].split(":")[1].split(";")[0];
-            // alert(mimeType);
-            // };
-            // reader.readAsDataURL(objFile);
         })
-        console.log('objFiles:' + objFiles + ' count:' + objFiles.length);
-        console.log('versIds:' + versIds + ' count:' + versIds.length);
 
         if(this.overriddenFileName){
             updateFileName({versIds: versIds, fileName: this.overriddenFileName.substring(0,255)})
@@ -142,7 +170,6 @@ export default class GovFileUploadEnhanced extends LightningElement {
                     this.showErrors(this.reduceErrors(error).toString());
                 });
         }
-        // console.log('this.recordId:'+this.recordId);
         if(this.recordId){
             // console.log('============================');
             // console.log('versIds:'+versIds);
@@ -334,6 +361,26 @@ export default class GovFileUploadEnhanced extends LightningElement {
         this.loading = false;
     }
 
+    @api
+    validate(){
+        if(this.docIds.length === 0 && this.required === true){ 
+            let errorMessage;
+            if(this.requiredMessage == null){
+                errorMessage = 'Upload at least one file.';
+            }
+            else{
+                errorMessage = this.requiredMessage;
+            }
+            return { 
+                isValid: false,
+                errorMessage: errorMessage
+             }; 
+        } 
+        else {
+            return { isValid: true };
+        }
+    }
+
     checkDisabled(){
         if(!this.allowMultiple && this.objFiles.length >= 1){
             this.disabled = true;
@@ -343,6 +390,7 @@ export default class GovFileUploadEnhanced extends LightningElement {
     }
 
     showErrors(errors){
+        console.log('errors', errors);
         if(this.embedExternally){
             this.showAlert(errors);
         } else {
