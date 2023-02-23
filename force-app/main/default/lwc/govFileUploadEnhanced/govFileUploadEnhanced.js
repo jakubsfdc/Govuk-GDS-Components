@@ -3,6 +3,7 @@ import uploadUiOverride from '@salesforce/resourceUrl/uploadUiOverride';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { loadStyle } from 'lightning/platformResourceLoader';
 import { FlowAttributeChangeEvent } from 'lightning/flowSupport';
+import { MessageContext, publish, subscribe, unsubscribe } from 'lightning/messageService';
 import getKey from '@salesforce/apex/FileUploadAdvancedHelper.getKey';
 import encrypt from '@salesforce/apex/FileUploadAdvancedHelper.encrypt';
 import createContentVers from '@salesforce/apex/FileUploadAdvancedHelper.createContentVers';
@@ -11,6 +12,11 @@ import createContentDocLink from '@salesforce/apex/FileUploadAdvancedHelper.crea
 import deleteContentDoc from '@salesforce/apex/FileUploadAdvancedHelper.deleteContentDoc';
 import getExistingFiles from '@salesforce/apex/FileUploadAdvancedHelper.getExistingFiles';
 import updateFileName from '@salesforce/apex/FileUploadAdvancedHelper.updateFileName';
+
+//message channels
+import REGISTER_MC from '@salesforce/messageChannel/registrationMessage__c';
+import VALIDATION_MC from '@salesforce/messageChannel/validateMessage__c';
+import VALIDATION_STATE_MC from '@salesforce/messageChannel/validationStateMessage__c';
 
 export default class GovFileUploadEnhanced extends LightningElement {
 
@@ -35,8 +41,11 @@ export default class GovFileUploadEnhanced extends LightningElement {
     @api recordId;
     numberOfFilesToUpload = 0;
     loading = false;
-
     disabled = false;
+
+    // messaging attributes
+    @wire(MessageContext) messageContext;
+    validateSubscription;
 
     key;
     @wire(getKey)
@@ -86,8 +95,6 @@ export default class GovFileUploadEnhanced extends LightningElement {
 
     connectedCallback(){
 
-
-        
         let cachedSelection = sessionStorage.getItem(this.sessionKey);
         if(cachedSelection){
             this.processFiles(JSON.parse(cachedSelection));
@@ -109,6 +116,18 @@ export default class GovFileUploadEnhanced extends LightningElement {
         }
 
         this.displayExistingFiles();
+
+        // subscribe to the message channels
+        this.subscribeMCs();
+
+        // publish the registration message after 0.1 sec to give other components time to initialise
+        setTimeout(() => {
+            publish(this.messageContext, REGISTER_MC, {componentId:this.fieldId});
+        }, 100);
+    }
+
+    disconnectedCallback() {
+        this.unsubscribeMCs();
     }
 
     displayExistingFiles(){
@@ -116,26 +135,26 @@ export default class GovFileUploadEnhanced extends LightningElement {
         console.log('this.objFiles: ' + this.objFiles);
         console.log('this.objFiles.length: ' + this.objFiles.length);
         
-        
-
         if(this.objFiles.length > 0){ // FIX
             this.displayFileList = true;
-            console.log(' this.objFiles.length this.displayFileList: ' + this.displayFileList);
         } else {
             this.displayFileList = false;
         }
     }
 
     handleUpload_lightningFile(event){
+
         let files = event.detail.files;
         this.handleUploadFinished(files);
     }
 
     handleUploadFinished(files) {
+        
 
         let objFiles = [];
         let versIds = [];
 
+        console.log('handleUploadFinished files', files);
         files.forEach(file => {
             if(file.contentVersionId){
                  console.log('file.contentVersionId:' + file.contentVersionId);
@@ -361,25 +380,68 @@ export default class GovFileUploadEnhanced extends LightningElement {
         this.loading = false;
     }
 
-    @api
-    validate(){
-        if(this.docIds.length === 0 && this.required === true){ 
-            let errorMessage;
-            if(this.requiredMessage == null){
-                errorMessage = 'Upload at least one file.';
-            }
-            else{
-                errorMessage = this.requiredMessage;
-            }
-            return { 
-                isValid: false,
-                errorMessage: errorMessage
-             }; 
-        } 
-        else {
-            return { isValid: true };
+    // LMS functions
+
+    subscribeMCs() {
+        if (this.validateSubscription) {
+            return;
         }
+        this.validateSubscription = subscribe (
+            this.messageContext,
+            VALIDATION_MC, (message) => {
+                this.handleValidateMessage(message);
+            });
     }
+
+    unsubscribeMCs() {
+        unsubscribe(this.validateSubscription);
+        this.validateSubscription = null;
+    }
+
+    handleValidateMessage(message) {
+        this.handleValidate()
+    }
+
+    @api handleValidate() {
+        this.hasErrors = false;
+
+        if(this.docIds.length === 0 && this.required === true){ 
+            this.hasErrors = true;
+        } else {
+            this.hasErrors = false;
+        }
+
+        //console.log('CHECKBOX: Sending validation state message');
+        publish(this.messageContext, VALIDATION_STATE_MC, {
+            componentId: this.fieldId,
+            isValid: !this.hasErrors,
+            error: this.errorMessage
+        });
+    }
+
+    @api clearError() {
+        this.hasErrors = false;
+    }
+
+    // @api
+    // validate(){
+    //     if(this.docIds.length === 0 && this.required === true){ 
+    //         let errorMessage;
+    //         if(this.requiredMessage == null){
+    //             errorMessage = 'Upload at least one file.';
+    //         }
+    //         else{
+    //             errorMessage = this.requiredMessage;
+    //         }
+    //         return { 
+    //             isValid: false,
+    //             errorMessage: errorMessage
+    //          }; 
+    //     } 
+    //     else {
+    //         return { isValid: true };
+    //     }
+    // }
 
     checkDisabled(){
         if(!this.allowMultiple && this.objFiles.length >= 1){

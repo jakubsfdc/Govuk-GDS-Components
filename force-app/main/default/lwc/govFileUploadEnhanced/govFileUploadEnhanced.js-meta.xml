@@ -74,6 +74,7 @@
                 description="Require the user to upload at least one file."
                 role="inputOnly"
             />
+            <property name="errorMessage" type="String" label="Error Message" description="Error Message"/>
            
         </targetConfig>
     </targetConfigs>
