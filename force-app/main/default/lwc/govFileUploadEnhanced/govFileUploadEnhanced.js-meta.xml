@@ -33,13 +33,13 @@
                 type="String" label="Accepted Formats"
                 description="The accepted file types. Enter a comma-separated list of the file extensions (such as .jpg) that the user can upload."
             />
-            <property
-                name="sessionKey"
+            <!-- <property
+                name="ç"
                 type="String"
                 label='{!$Flow.InterviewGuid}'
                 description="Unique identifier for this field. You can start by using {!$Flow.InterviewGuid}. If you have multiple of this component type in the same flow, you'll have to prepend {!$Flow.InterviewGuid} with something else like '1' or '2' to make each component unique."
                 role="inputOnly"
-            />
+            /> -->
             <property
                 name="contentDocumentIds"
                 type="String[]"
