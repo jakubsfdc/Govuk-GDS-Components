@@ -131,9 +131,6 @@ export default class GovFileUploadEnhanced extends LightningElement {
     }
 
     displayExistingFiles(){
-        console.log('this.renderExistingFiles: ' + this.renderExistingFiles);
-        console.log('this.objFiles: ' + this.objFiles);
-        console.log('this.objFiles.length: ' + this.objFiles.length);
         
         if(this.objFiles.length > 0){ // FIX
             this.displayFileList = true;
@@ -154,16 +151,8 @@ export default class GovFileUploadEnhanced extends LightningElement {
         let objFiles = [];
         let versIds = [];
 
-        console.log('handleUploadFinished files', files);
         files.forEach(file => {
-            if(file.contentVersionId){
-                 console.log('file.contentVersionId:' + file.contentVersionId);
-            } else {
-                 console.log('NOT AVAILABLE file.contentVersionId:');   
-            }
 
-            console.log('file.documentId:' + file.documentId);
-            console.log('file.name:' + file.name);
             let name;
             if(this.overriddenFileName){
                 name = this.overriddenFileName.substring(0,255) +'.'+ file.name.split('.').pop();
@@ -185,16 +174,10 @@ export default class GovFileUploadEnhanced extends LightningElement {
         if(this.overriddenFileName){
             updateFileName({versIds: versIds, fileName: this.overriddenFileName.substring(0,255)})
                 .catch(error => {
-                    console.log('Err overrideFileName' + error);
                     this.showErrors(this.reduceErrors(error).toString());
                 });
         }
         if(this.recordId){
-            // console.log('============================');
-            // console.log('versIds:'+versIds);
-            // console.log('this.key:'+this.key);
-            // console.log('this.visibleToAllUsers:'+this.visibleToAllUsers);
-            // console.log('============================');
             createContentDocLink({versIds: versIds, encodedKey: this.key, visibleToAllUsers: this.visibleToAllUsers})
                 .catch(error => {
                     this.showErrors(this.reduceErrors(error).toString());
@@ -381,7 +364,6 @@ export default class GovFileUploadEnhanced extends LightningElement {
     }
 
     // LMS functions
-
     subscribeMCs() {
         if (this.validateSubscription) {
             return;
@@ -411,7 +393,6 @@ export default class GovFileUploadEnhanced extends LightningElement {
             this.hasErrors = false;
         }
 
-        //console.log('CHECKBOX: Sending validation state message');
         publish(this.messageContext, VALIDATION_STATE_MC, {
             componentId: this.fieldId,
             isValid: !this.hasErrors,
@@ -423,26 +404,6 @@ export default class GovFileUploadEnhanced extends LightningElement {
         this.hasErrors = false;
     }
 
-    // @api
-    // validate(){
-    //     if(this.docIds.length === 0 && this.required === true){ 
-    //         let errorMessage;
-    //         if(this.requiredMessage == null){
-    //             errorMessage = 'Upload at least one file.';
-    //         }
-    //         else{
-    //             errorMessage = this.requiredMessage;
-    //         }
-    //         return { 
-    //             isValid: false,
-    //             errorMessage: errorMessage
-    //          }; 
-    //     } 
-    //     else {
-    //         return { isValid: true };
-    //     }
-    // }
-
     checkDisabled(){
         if(!this.allowMultiple && this.objFiles.length >= 1){
             this.disabled = true;
@@ -452,7 +413,6 @@ export default class GovFileUploadEnhanced extends LightningElement {
     }
 
     showErrors(errors){
-        console.log('errors', errors);
         if(this.embedExternally){
             this.showAlert(errors);
         } else {
