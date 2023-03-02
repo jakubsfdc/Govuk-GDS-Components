@@ -60,13 +60,8 @@
                 label='Related Record Id'
                 description="The Id of the record to associate the files with. Be aware that sharing rules are NOT enforced, so the user could be uploading files to a record that they wouldn't normally have access to. Don't know the Related Record Id because you're going to create the record after this screen? You can leave this field blank and use the 'Create Content Document Links Downstream' Apex Action."
             />
-            <property
-                name="uploadedFileNames"
-                type="String[]"
-                label='Uploaded File Names'
-                description="The names of the uploaded files. Store this value in a text collection variable."
-                role="outputOnly"
-            />
+            <property name="filesUploaded" type="String" label="Uploaded file names" description="Semi-colon delimited list of file names uploaded. Text variable. Output only."/>
+            <property name="filesUploadedCollection" type="String[]" label="Uploaded file names Collection" description="A collection variable to hold the names of any files uploaded. Output only."/>
             <property
                 name="required"
                 type="Boolean"

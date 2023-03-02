@@ -43,6 +43,9 @@ export default class GovFileUploadEnhanced extends LightningElement {
     loading = false;
     disabled = false;
 
+    @api filesUploadedCollection = []; 
+    @api filesUploaded; 
+
     // messaging attributes
     @wire(MessageContext) messageContext;
     validateSubscription;
@@ -165,6 +168,7 @@ export default class GovFileUploadEnhanced extends LightningElement {
                 documentId: file.documentId,
                 contentVersionId: file.contentVersionId
             }
+
             objFiles.push(objFile);
 
             versIds.push(file.contentVersionId);
@@ -437,6 +441,10 @@ export default class GovFileUploadEnhanced extends LightningElement {
         this.dispatchEvent(new FlowAttributeChangeEvent('contentDocumentIds', [...docIds]));
         this.dispatchEvent(new FlowAttributeChangeEvent('contentVersionIds', [...versIds]));
         this.dispatchEvent(new FlowAttributeChangeEvent('uploadedFileNames', [...fileNames]));
+
+        //update file names output variables
+        this.filesUploadedCollection = fileNames;
+        this.filesUploaded = fileNames.join(';');
 
         sessionStorage.setItem(this.sessionKey, JSON.stringify(objFiles));
     }
