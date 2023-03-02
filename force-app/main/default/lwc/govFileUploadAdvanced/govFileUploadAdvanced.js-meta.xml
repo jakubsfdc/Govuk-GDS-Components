@@ -33,7 +33,7 @@
                 label="Allow Multiple Files"
                 description="Allow the user to upload multiple files. If this is not TRUE, then once the user uploads one file, the file upload component will not allow any additional files to be uploaded."
             />
-            <property name="cb_allowMultiple" type="String" />
+            <property name="cb_allowMultiple" type="String" role="inputOnly" />
             <property
                 name="sessionKey"
                 type="String"
