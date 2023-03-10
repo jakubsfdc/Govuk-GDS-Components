@@ -136,4 +136,12 @@
         <shortDescription>uxg Year label</shortDescription>
         <value>Year</value>
     </labels>
+    <labels>
+        <fullName>uxg_Skiplink_label</fullName>
+        <categories>UXGOV</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>uxg Skiplink label</shortDescription>
+        <value>Skip to main content</value>
+    </labels>
 </CustomLabels>
