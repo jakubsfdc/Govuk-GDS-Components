@@ -26,6 +26,10 @@ export default class GovCheckboxes extends LightningElement {
     @api outputValue;
     @api picklistField;
 
+    @api h1Size = false;
+    @api h2Size = false;
+    @api h3Size = false;
+
     @api headingFontSize = '';
     @api smallerCheckboxes;
 
@@ -67,6 +71,9 @@ export default class GovCheckboxes extends LightningElement {
     }
 
     connectedCallback() {
+        // sets the H value for template based on labele font size  
+        this.getHSize(); 
+        
         let defaultValuesBooleanList = [];
         let defaultValuesList = this.outputValueBoolean ? this.outputValueBoolean.split(';') : [];
         for(let i=0; i<defaultValuesList.length;i++){
@@ -169,6 +176,32 @@ export default class GovCheckboxes extends LightningElement {
             element.innerHTML = this.label;
         })
         this.initialised = true;
+    }
+
+    getHSize(){
+        if(this.headingFontSize) {
+            switch(this.headingFontSize.toLowerCase()) {
+                case "small":
+                    this.h3Size = true;
+                    // labelClass = "govuk-label govuk-label--s";
+                    break;
+                case "medium":
+                    this.h2Size = true;
+                    // labelClass = "govuk-label govuk-label--m";
+                    break;
+                case "large":
+                    this.h1Size = true;
+                    // labelClass = "govuk-label govuk-label--l";
+                    break;
+                default:
+                    this.h3Size = true;
+                    // labelClass = "govuk-label govuk-label--s";
+            }
+        } else {
+            this.h3Size = true;
+            // labelClass = "govuk-label govuk-label--s";
+        }
+        //return labelClass;
     }
 
     // Event Functions
