@@ -26,6 +26,10 @@ export default class GovRadios extends LightningElement {
     @api radioValues = "";
     @api selectedValue = "";  
     @api errorMessage;
+
+    @api h1Size = false;
+    @api h2Size = false;
+    @api h3Size = false;
     
     @track isInitialised = false;
     @track hasErrors = false;
@@ -61,12 +65,41 @@ export default class GovRadios extends LightningElement {
         radioClass = (this.smallerRadios) ? radioClass + " govuk-radios--small" : radioClass;
         return radioClass;
     }
+
+    getHSize(){
+        if(this.questionFontSize) {
+            switch(this.questionFontSize.toLowerCase()) {
+                case "small":
+                    this.h3Size = true;
+                    // labelClass = "govuk-label govuk-label--s";
+                    break;
+                case "medium":
+                    this.h2Size = true;
+                    // labelClass = "govuk-label govuk-label--m";
+                    break;
+                case "large":
+                    this.h1Size = true;
+                    // labelClass = "govuk-label govuk-label--l";
+                    break;
+                default:
+                    this.h3Size = true;
+                    // labelClass = "govuk-label govuk-label--s";
+            }
+        } else {
+            this.h3Size = true;
+            // labelClass = "govuk-label govuk-label--s";
+        }
+        //return labelClass;
+    }
     
     // messaging attributes
     @wire(MessageContext) messageContext;
     validateSubscription;
 
     connectedCallback() {
+        // sets the H value for template based on labele font size  
+        this.getHSize(); 
+
         if(this.radioPicklistField !== '' && this.radioPicklistField !== undefined && this.radioPicklistField !== null) {
             // get picklist field values
             getPicklistValuesByObjectField({
