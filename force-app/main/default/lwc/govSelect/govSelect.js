@@ -24,6 +24,10 @@ export default class GovSelect extends LightningElement {
     @api optionLabels;
     @api optionValues;
 
+    @api h1Size = false;
+    @api h2Size = false;
+    @api h3Size = false;
+
     @track selectOptions;
 
     hasErrors;
@@ -34,6 +38,9 @@ export default class GovSelect extends LightningElement {
 
 
     connectedCallback() {
+        // sets the H value for template based on labele font size  
+        this.getHSize(); 
+        
         if(this.picklist !== '' && this.picklist !== undefined && this.picklist !== null) {
             //call the apex to get the values
             getPicklistValuesByObjectField({
@@ -116,6 +123,32 @@ export default class GovSelect extends LightningElement {
                 labelClass = "govuk-label govuk-label--s";
         }
         return labelClass;
+    }
+
+    getHSize(){
+        if(this.fontSize) {
+            switch(this.fontSize.toLowerCase()) {
+                case "small":
+                    this.h3Size = true;
+                    // labelClass = "govuk-label govuk-label--s";
+                    break;
+                case "medium":
+                    this.h2Size = true;
+                    // labelClass = "govuk-label govuk-label--m";
+                    break;
+                case "large":
+                    this.h1Size = true;
+                    // labelClass = "govuk-label govuk-label--l";
+                    break;
+                default:
+                    this.h3Size = true;
+                    // labelClass = "govuk-label govuk-label--s";
+            }
+        } else {
+            this.h3Size = true;
+            // labelClass = "govuk-label govuk-label--s";
+        }
+        //return labelClass;
     }
 
     handleOnChange(event) {
