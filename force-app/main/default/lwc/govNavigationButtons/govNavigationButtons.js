@@ -197,6 +197,12 @@ export default class GovNavigationButtons extends LightningElement {
     handleValidationUpdate(message) {
         //console.log(`NAVIGATION_BUTTONS: Received validation state message from component ${JSON.stringify(message)}`);
         // update the component that sent the message
+        console.log('BUTTONS validation compId: ' + message.componentId);
+        console.log('BUTTONS validation compId: ' + message.isValid);
+        console.log('BUTTONS validation compId: ' + message.error);
+        console.log('BUTTONS validation compId: ' + message.focusComponentId);
+        
+        console.log('---------- ');
         const component = this.components.find(component => component.id === message.componentId);
         if(component) {
             //console.log(`NAVIGATION_BUTTONS: Setting component ${component.id} to ${message.isValid}`);

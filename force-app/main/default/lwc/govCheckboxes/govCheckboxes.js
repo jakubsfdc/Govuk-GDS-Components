@@ -10,10 +10,12 @@ import REGISTER_MC from '@salesforce/messageChannel/registrationMessage__c';
 import VALIDATION_MC from '@salesforce/messageChannel/validateMessage__c';
 import VALIDATION_STATE_MC from '@salesforce/messageChannel/validationStateMessage__c';
 import getPicklistValuesByObjectField from '@salesforce/apex/GovComponentHelper.getPicklistValuesByObjectField';
+import SET_FOCUS_MC from '@salesforce/messageChannel/setFocusMessage__c';
 
 export default class GovCheckboxes extends LightningElement {
     // flow inputs and outputs
     @api fieldId = "checkboxField";
+    checkboxFieldIdForFocus;
     @api errorMessage;
     @api headinglabel;
     @api headinghint;
@@ -43,6 +45,7 @@ export default class GovCheckboxes extends LightningElement {
     // messaging attributes
     @wire(MessageContext) messageContext;
     validateSubscription;
+    setFocusSubscription;
 
     //Lifecycle functions
 
@@ -169,6 +172,12 @@ export default class GovCheckboxes extends LightningElement {
     }
 
     renderedCallback() {
+
+        const firstChecboxName = this.checkboxArray[0].checkboxLabel;
+        console.log('firstCheckoxName: ' + firstChecboxName);
+        let allCheckboxFieldComps = this.template.querySelectorAll('input[name="'+firstChecboxName+'"]');
+        this.checkboxFieldIdForFocus = allCheckboxFieldComps[0].id;
+
         if(this.initialised) {
             return;
         }
@@ -287,11 +296,31 @@ export default class GovCheckboxes extends LightningElement {
             VALIDATION_MC, (message) => {
                 this.handleValidateMessage(message);
             });
+    
+        // Receive focus request with message.componentId
+        this.setFocusSubscription = subscribe (
+            this.messageContext,
+            SET_FOCUS_MC, (message) => {
+                this.handleSetFocusMessage(message);
+            }
+        )
     }
 
     unsubscribeMCs() {
         unsubscribe(this.validateSubscription);
         this.validateSubscription = null;
+        unsubscribe(this.setFocusSubscription);
+        this.setFocusSubscription = null;
+    }
+
+    handleSetFocusMessage(message){
+        // filter message to check if our component (id) needs to set focus
+        let myComponentId = message.componentId;
+        if(myComponentId == this.checkboxFieldIdForFocus){
+            console.dir(message);
+            let myComponent = this.template.querySelector('input');
+            myComponent.focus();
+        }
     }
 
     handleValidateMessage(message) {
@@ -309,7 +338,7 @@ export default class GovCheckboxes extends LightningElement {
 
         //console.log('CHECKBOX: Sending validation state message');
         publish(this.messageContext, VALIDATION_STATE_MC, {
-            componentId: this.fieldId,
+            componentId: this.checkboxFieldIdForFocus, //  // this.fieldId,
             isValid: !this.hasErrors,
             error: this.errorMessage
         });

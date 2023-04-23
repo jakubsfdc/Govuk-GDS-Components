@@ -117,6 +117,7 @@ export default class GovRadios extends LightningElement {
                         radioOption.key = `picklist-value-${i}`;
                         radioOption.value = result[i];
                         radioOption.label = result[i];
+                        console.log(' !!!!!! result[i]: ' + result[i]);
                         radioOption.checked = (this.selectedValue === result[i]);
                         this.radioOptions.push(radioOption);
                         if (i==0) {
@@ -138,6 +139,7 @@ export default class GovRadios extends LightningElement {
                 radioOption.key = `csv-value-${i}`;
                 radioOption.label = radioLabelsArray[i];
                 radioOption.value = radioValuesArray[i];
+                console.log(' !!!!!! radioValuesArray[i]: ' + radioValuesArray[i]);
                 radioOption.checked = (this.selectedValue === radioValuesArray[i]);
                 this.radioOptions.push(radioOption);
                 if (i==0) {
@@ -167,6 +169,7 @@ export default class GovRadios extends LightningElement {
     }
 
     handleValueChanged(event) {
+        console.log('handleValueChanged => event.target.value:' + event.target.value);
         this.selectedValue = event.target.value;
         this.radioOptions.forEach(radioOption => {
            if(radioOption.value === this.selectedValue) {
@@ -196,8 +199,10 @@ export default class GovRadios extends LightningElement {
 
     @api 
     handleValidate() {
-        this.hasErrors = false;
+        this.clearError();
+        // this.hasErrors = false;
         if(this.requiredQuestion && (this.selectedValue === '' || this.selectedValue === undefined)) {
+            console.log('still has errors: ' + this.requiredQuestion + ' ' + this.selectedValue + ' ' );
             this.hasErrors = true;
         }
         publish(this.messageContext, VALIDATION_STATE_MC, {
@@ -214,6 +219,7 @@ export default class GovRadios extends LightningElement {
     }
 
     dispatchRadioEvent() {
+        console.log('dispatchRadioEvent this.selectedValue'+ this.selectedValue + ' this.uniqueFieldId: ' + this.uniqueFieldId);
         // tell the flow engine about the change
         const attributeChangeEvent = new FlowAttributeChangeEvent('value', this.selectedValue);
         this.dispatchEvent(attributeChangeEvent);
