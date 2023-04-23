@@ -88,3 +88,6 @@ To do this:
  - Page Juggling license
  - Check Public available
  - Click Save Menu
+
+## Note  :
+in govMarkupText.js-meta.xml, please make sure for unmanaged component to change "uxgovuk-gov-markup-text-editor' to "c-gov-markup-text-editor"
