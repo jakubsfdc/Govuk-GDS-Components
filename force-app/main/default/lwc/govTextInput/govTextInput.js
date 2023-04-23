@@ -74,11 +74,10 @@ export default class GovTextInput extends LightningElement {
     }
 
     renderedCallback() {
-        console.log('checking if template is loaded:');
-        console.log(this.template);
+        // getting ID of component's field
         this.textFieldId = this.template.querySelector('input').getAttribute('id'); 
-        console.log('>>>>>> from renderCallback textFieldId=' + this.textFieldId);
         
+        // inserting hint text and rendering its HTML
         const htmlElement = this.template.querySelector(".html-element");
         if(htmlElement) {
             htmlElement.innerHTML = this.hintText;
@@ -223,36 +222,19 @@ export default class GovTextInput extends LightningElement {
     }
 
     handleSetFocusMessage(message){
-        // console.log(' * /////////////// ');
-        // console.log('Inside handleSetFocusMessage with message:');
-        
-        // console.log('message.componentId: '+ message.componentId + ' <<<<<');
+        // filter message to check if our component (id) needs to set focus
         let myComponentId = message.componentId;
-        // console.log('My Comp ID:' + this.textFieldId);
+
         if(myComponentId == this.textFieldId){
             console.dir(message);
-            console.log('Yay! Its me. Calling setting focus on element id:' + this.textFieldId);
-            let myComponent = this.template.querySelector('input'); //.getElementById(this.textFieldId);
+            let myComponent = this.template.querySelector('input');
             console.log('myComponent: '+ myComponent);
             console.log('myComponent: '+ myComponent.id);
             console.log('myComponent: '+ myComponent.innerHTML);
             console.log('myComponent: '+ myComponent.value);
             myComponent.focus();
-            //this.handleSetFocus(myComponentId);
-        } else {
-            // console.log('Its not my component:' + this.textFieldId);
         }
-        // console.log(' /////////////// * ');
-        // console.log(' ^ * ');
     }
-
-    // handleSetFocus(componentId){
-    //     console.log('Inside handleSetFocus for componentId: '+componentId);
-    //     console.log('componentId:'+componentId);
-    //     let myComponent = this.template.getElementById(componentId);
-    //     console.log('myComponent: '+ myComponent);
-    //     myComponent.focus();
-    // }
 
     handleValidateMessage(message) {
         this.handleValidate();
@@ -270,10 +252,9 @@ export default class GovTextInput extends LightningElement {
                 }
             }
         }
-        console.log('¢¢¢¢¢¢¢ this.textFieldId: ' + this.textFieldId);
+        
         publish(this.messageContext, VALIDATION_STATE_MC, {
             componentId: this.textFieldId,
-            componentType: 'C-GOV-TEXT-INPUT', // TODO: Chang to UXGOVUK-GOV-TEXT-INPUT
             componentSelect: 'INPUT',
             isValid: !this.hasErrors,
             error: this.errorMessage
