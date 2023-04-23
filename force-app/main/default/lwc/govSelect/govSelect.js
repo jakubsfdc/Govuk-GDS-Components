@@ -10,9 +10,11 @@ import { MessageContext, publish, subscribe, unsubscribe } from 'lightning/messa
 import REGISTER_MC from '@salesforce/messageChannel/registrationMessage__c';
 import VALIDATION_MC from '@salesforce/messageChannel/validateMessage__c';
 import VALIDATION_STATE_MC from '@salesforce/messageChannel/validationStateMessage__c';
+import SET_FOCUS_MC from '@salesforce/messageChannel/setFocusMessage__c';
 
 export default class GovSelect extends LightningElement {
     @api fieldId = "selectField";
+    fieldIdToFocus;
     @api label;
     @api fontSize;
     @api hintText;
@@ -35,7 +37,7 @@ export default class GovSelect extends LightningElement {
     // messaging attributes
     @wire(MessageContext) messageContext;
     validateSubscription;
-
+    setFocusSubscription;
 
     connectedCallback() {
         // sets the H value for template based on labele font size  
@@ -94,6 +96,10 @@ export default class GovSelect extends LightningElement {
         setTimeout(() => {
             publish(this.messageContext, REGISTER_MC, {componentId:this.fieldId});
         }, 100);
+    }
+
+    renderedCallback(){
+        this.fieldIdToFocus = this.template.querySelector('select').getAttribute('id'); 
     }
 
     disconnectedCallback() {
@@ -201,13 +207,45 @@ export default class GovSelect extends LightningElement {
         this.validateSubscription = subscribe (
             this.messageContext,
             VALIDATION_MC, (message) => {
+                console.log('message form validation '+ message);
+                console.log('message form validation '+ message.isValid);
+                console.log('message form validation '+ message.error);
+                console.log('message form validation '+ message.componentSelect);
+                console.log('message form validation '+ message.componentType);
+                console.log('message form validation '+ message.componentId);
+                console.dir(message);
                 this.handleValidateMessage(message);
             });
+
+        // Receive focus request with message.componentId
+        this.setFocusSubscription = subscribe (
+            this.messageContext,
+            SET_FOCUS_MC, (message) => {
+                this.handleSetFocusMessage(message);
+            }
+        )
     }
 
     unsubscribeMCs() {
         unsubscribe(this.validateSubscription);
         this.validateSubscription = null;
+        unsubscribe(this.setFocusSubscription);
+        this.setFocusSubscription = null;
+    }
+
+    handleSetFocusMessage(message){
+        // filter message to check if our component (id) needs to set focus
+        let myComponentId = message.componentId;
+        console.log('myComponentId: ' + myComponentId);
+        if(myComponentId == this.fieldIdToFocus){
+            console.dir(message);
+            let myComponent = this.template.querySelector('select');
+            console.log('myComponent: '+ myComponent);
+            console.log('myComponent: '+ myComponent.id);
+            console.log('myComponent: '+ myComponent.innerHTML);
+            console.log('myComponent: '+ myComponent.value);
+            myComponent.focus();
+        }
     }
 
     handleValidateMessage(message) {
@@ -223,9 +261,9 @@ export default class GovSelect extends LightningElement {
             this.hasErrors = false;
         }
 
-        //console.log('SELECT: Sending validation state message');
+        console.log('SELECT: Sending validation state message');
         publish(this.messageContext, VALIDATION_STATE_MC, {
-            componentId: this.fieldId,
+            componentId: this.fieldIdToFocus, //this.fieldId,
             isValid: !this.hasErrors,
             error: this.errorMessage
         });
