@@ -18,6 +18,8 @@ import Invalid_year_error from '@salesforce/label/c.uxg_Invalid_year_error';
 import Non_numeric_day_error from '@salesforce/label/c.uxg_Non_numeric_day_error';
 import Non_numeric_month_error from '@salesforce/label/c.uxg_Non_numeric_month_error';
 import Non_numeric_year_error from '@salesforce/label/c.uxg_Non_numeric_year_error';
+import SET_FOCUS_MC from '@salesforce/messageChannel/setFocusMessage__c';
+
 export default class GovDate extends LightningElement {
     
 
@@ -64,6 +66,8 @@ export default class GovDate extends LightningElement {
     // messaging attributes
     @wire(MessageContext) messageContext;
     validateSubscription;
+    setFocusSubscription;
+
     get groupClass() {
         if (this.hasErrors) {
             return "govuk-form-group govuk-form-group--error";
@@ -154,15 +158,25 @@ export default class GovDate extends LightningElement {
     }
 
     renderedCallback() {
-       if ((this.template.querySelector('input').getAttribute('id')).indexOf(this.dayFieldId) !== -1) {
-           this.dayFieldId = this.template.querySelector('input').getAttribute('id');
-       }
-       if ((this.template.querySelector('input').getAttribute('id')).indexOf(this.monthFieldId) !== -1) {
-           this.monthFieldId = this.template.querySelector('input').getAttribute('id');
-       }
-       if ((this.template.querySelector('input').getAttribute('id')).indexOf(this.yearFieldId) !== -1) {
-           this.yearFieldId = this.template.querySelector('input').getAttribute('id');
-       }
+        // retrieving unique IDs of input fields (day, month, year)
+        let myDateComponents = this.template.querySelectorAll('input');
+        for (let i = 0; i < myDateComponents.length; i++) {
+            let myDateComp = myDateComponents[i];
+            const myCompName = myDateComp.name;
+
+            switch(myCompName){
+                case 'date-input-day':
+                    this.dayFieldId = myDateComp.id;
+                    break;
+                case 'date-input-month':
+                    this.monthFieldId = myDateComp.id;
+                    break;
+                case 'date-input-year':
+                    this.yearFieldId = myDateComp.id;
+                    break;
+                default:
+            }
+        }
    }
 
     disconnectedCallback() {
@@ -232,11 +246,36 @@ export default class GovDate extends LightningElement {
             VALIDATE_MC, (message) => {
                 this.handleValidateMessage(message);
             });
+        
+         // Receive focus request with message.componentId
+        this.setFocusSubscription = subscribe (
+            this.messageContext,
+            SET_FOCUS_MC, (message) => {
+                console.log('received message for componentId: '+ message.componentId);
+                this.handleSetFocusMessage(message);
+            }
+        )
     }
 
     unsubscribeMCs() {
         unsubscribe(this.validateSubscription);
         this.validateSubscription = null;
+        unsubscribe(this.setFocusSubscription);
+        this.setFocusSubscription = null;
+    }
+
+    handleSetFocusMessage(message){
+        // filter message to check if our component (id) needs to set focus
+        let myComponentId = message.componentId;
+            // getting all input fields
+            let myDateComponents = this.template.querySelectorAll('input');
+            for (let i = 0; i < myDateComponents.length; i++) {
+                let myDateComp = myDateComponents[i];
+                // setting focus only if current input field matches message.componentId
+                if (myDateComp.id == myComponentId){
+                    myDateComp.focus();
+                }
+            }
     }
 
     handleValidateMessage(message) {
