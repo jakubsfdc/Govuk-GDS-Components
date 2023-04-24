@@ -93,9 +93,9 @@ export default class GovSelect extends LightningElement {
         this.subscribeMCs();
 
         // publish the registration message after 0.1 sec to give other components time to initialise
-        setTimeout(() => {
-            publish(this.messageContext, REGISTER_MC, {componentId:this.fieldId});
-        }, 100);
+        // setTimeout(() => {
+        //     publish(this.messageContext, REGISTER_MC, {componentId:this.fieldId});
+        // }, 100);
     }
 
     renderedCallback(){
@@ -207,13 +207,13 @@ export default class GovSelect extends LightningElement {
         this.validateSubscription = subscribe (
             this.messageContext,
             VALIDATION_MC, (message) => {
-                console.log('message form validation '+ message);
-                console.log('message form validation '+ message.isValid);
-                console.log('message form validation '+ message.error);
-                console.log('message form validation '+ message.componentSelect);
-                console.log('message form validation '+ message.componentType);
-                console.log('message form validation '+ message.componentId);
-                console.dir(message);
+                // console.log('message form validation '+ message);
+                // console.log('message form validation '+ message.isValid);
+                // console.log('message form validation '+ message.error);
+                // console.log('message form validation '+ message.componentSelect);
+                // console.log('message form validation '+ message.componentType);
+                // console.log('message form validation '+ message.componentId);
+                // console.dir(message);
                 this.handleValidateMessage(message);
             });
 
@@ -240,10 +240,10 @@ export default class GovSelect extends LightningElement {
         if(myComponentId == this.fieldIdToFocus){
             console.dir(message);
             let myComponent = this.template.querySelector('select');
-            console.log('myComponent: '+ myComponent);
-            console.log('myComponent: '+ myComponent.id);
-            console.log('myComponent: '+ myComponent.innerHTML);
-            console.log('myComponent: '+ myComponent.value);
+            // console.log('myComponent: '+ myComponent);
+            // console.log('myComponent: '+ myComponent.id);
+            // console.log('myComponent: '+ myComponent.innerHTML);
+            // console.log('myComponent: '+ myComponent.value);
             myComponent.focus();
         }
     }
@@ -261,7 +261,7 @@ export default class GovSelect extends LightningElement {
             this.hasErrors = false;
         }
 
-        console.log('SELECT: Sending validation state message');
+        // console.log('SELECT: Sending validation state message');
         publish(this.messageContext, VALIDATION_STATE_MC, {
             componentId: this.fieldIdToFocus, //this.fieldId,
             isValid: !this.hasErrors,

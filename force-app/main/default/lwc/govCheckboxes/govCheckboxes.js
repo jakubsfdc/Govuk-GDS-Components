@@ -162,9 +162,9 @@ export default class GovCheckboxes extends LightningElement {
         this.subscribeMCs();
 
         // publish the registration message after 0.1 sec to give other components time to initialise
-        setTimeout(() => {
-            publish(this.messageContext, REGISTER_MC, {componentId:this.fieldId});
-        }, 100);
+        // setTimeout(() => {
+        //     publish(this.messageContext, REGISTER_MC, {componentId:this.fieldId});
+        // }, 100);
     }
 
     disconnectedCallback() {
@@ -174,7 +174,7 @@ export default class GovCheckboxes extends LightningElement {
     renderedCallback() {
 
         const firstChecboxName = this.checkboxArray[0].checkboxLabel;
-        console.log('firstCheckoxName: ' + firstChecboxName);
+        // console.log('firstCheckoxName: ' + firstChecboxName);
         let allCheckboxFieldComps = this.template.querySelectorAll('input[name="'+firstChecboxName+'"]');
         this.checkboxFieldIdForFocus = allCheckboxFieldComps[0].id;
 

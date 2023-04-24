@@ -151,11 +151,11 @@ export default class GovRadios extends LightningElement {
 
         // subscribe to the message channels
         this.subscribeMCs();
-
+        
         // publish the registration message after 0.1 sec to give other components time to initialise
-        setTimeout(() => {
-            publish(this.messageContext, REGISTER_MC, { componentId: this.uniqueFieldId });
-        }, 100);
+        // setTimeout(() => {
+        //     publish(this.messageContext, REGISTER_MC, { componentId: this.uniqueFieldId });
+        // }, 100);
     }
 
     renderedCallback(){
@@ -169,7 +169,7 @@ export default class GovRadios extends LightningElement {
     }
 
     handleValueChanged(event) {
-        console.log('handleValueChanged => event.target.value:' + event.target.value);
+        // console.log('handleValueChanged => event.target.value:' + event.target.value);
         this.selectedValue = event.target.value;
         this.radioOptions.forEach(radioOption => {
            if(radioOption.value === this.selectedValue) {
@@ -202,7 +202,7 @@ export default class GovRadios extends LightningElement {
         this.clearError();
         // this.hasErrors = false;
         if(this.requiredQuestion && (this.selectedValue === '' || this.selectedValue === undefined)) {
-            console.log('still has errors: ' + this.requiredQuestion + ' ' + this.selectedValue + ' ' );
+            // console.log('still has errors: ' + this.requiredQuestion + ' ' + this.selectedValue + ' ' );
             this.hasErrors = true;
         }
         publish(this.messageContext, VALIDATION_STATE_MC, {
@@ -219,7 +219,7 @@ export default class GovRadios extends LightningElement {
     }
 
     dispatchRadioEvent() {
-        console.log('dispatchRadioEvent this.selectedValue'+ this.selectedValue + ' this.uniqueFieldId: ' + this.uniqueFieldId);
+        // console.log('dispatchRadioEvent this.selectedValue'+ this.selectedValue + ' this.uniqueFieldId: ' + this.uniqueFieldId);
         // tell the flow engine about the change
         const attributeChangeEvent = new FlowAttributeChangeEvent('value', this.selectedValue);
         this.dispatchEvent(attributeChangeEvent);
