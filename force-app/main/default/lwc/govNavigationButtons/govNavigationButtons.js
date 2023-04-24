@@ -96,26 +96,16 @@ export default class GovNavigationButtons extends LightningElement {
         this.unsubscribeMCs();
     }
 
-
     // class related functions
     get containerWidthClass() {
         return (this.fullWidth) ? "" : "govuk-grid-column-two-thirds";
     }
-
-
-    
 
     // Event handlers functions
     handleClick(event) {
         // get the action for the data-action attribute
         //var elementToSelect = null;
         this.action = event.target.getAttribute('data-action').toUpperCase();
-
-            // console.log('====================== ');
-            // console.log('this.action:' + this.action);
-            // console.log('this.availableActions' + this.availableActions);
-            // console.log('this.components' + this.components);
-
         // check to see if next or finish was selected and we have components to validate
         if( (this.action === 'NEXT' || this.action === 'FINISH') && this.components.length > 0 ) {
             this.components.forEach(component => {
@@ -144,8 +134,6 @@ export default class GovNavigationButtons extends LightningElement {
             this.dispatchEvent(event);
         } else {
             if(this.components.length > 0){
-                // console.log('====================== ');
-                // console.log('this.action:' + this.action);
                 this.components.forEach(component => {
                     component.isValid = false;
                 })
@@ -197,13 +185,7 @@ export default class GovNavigationButtons extends LightningElement {
     handleValidationUpdate(message) {
         //console.log(`NAVIGATION_BUTTONS: Received validation state message from component ${JSON.stringify(message)}`);
         // update the component that sent the message
-        // console.log('========================================================================');
-        // console.log('BUTTONS validation compId: compId: ' + message.componentId);
-        // console.log('BUTTONS validation compId: isValid: ' + message.isValid);
-        // console.log('BUTTONS validation compId: error: ' + message.error);
-        // console.log('BUTTONS validation compId: focusComponentId: ' + message.focusComponentId);
         
-        // console.log('---------- ');
         const component = this.components.find(component => component.id === message.componentId);
         if(component) {
             // console.log(`NAVIGATION_BUTTONS: Setting component ${component.id} to ${message.isValid}`);
@@ -239,12 +221,8 @@ export default class GovNavigationButtons extends LightningElement {
             // console.log(`NAVIGATION_BUTTONS: There are invalid components.`);
             for(let i=0; i<invalidComponents.length; i++ ){
                  let myComp = invalidComponents[i];
-                 console.log('bad comp id:' + myComp.componentId);
-                 console.log('bad comp isValid:' + myComp.isValid);
-                 console.log('bad comp error:' + myComp.error);
                 }
         }
-        // console.log('========================================================================');
     }
 
 }

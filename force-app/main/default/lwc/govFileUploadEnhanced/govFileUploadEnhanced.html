@@ -13,8 +13,10 @@
                     <p id="file-upload-1-error" class="govuk-error-message" if:true={hasErrors}>
                         <span class="govuk-visually-hidden">Error:</span>&nbsp;{errorMessage}
                       </p>
+                      <!-- name="upload File" -->
+                    <a href="#" id="fileUploaderSummaryTitle" name="fileUploaderSummaryTitle"></a>
                     <lightning-file-upload
-                            name="upload File"
+                            name="fileUploader"
                             accept={acceptedFormats}
                             file-field-name='Guest_Record_fileupload__c'
                             file-field-value={value}

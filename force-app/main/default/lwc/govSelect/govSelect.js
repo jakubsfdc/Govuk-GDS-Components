@@ -236,7 +236,7 @@ export default class GovSelect extends LightningElement {
     handleSetFocusMessage(message){
         // filter message to check if our component (id) needs to set focus
         let myComponentId = message.componentId;
-        console.log('myComponentId: ' + myComponentId);
+        // console.log('myComponentId: ' + myComponentId);
         if(myComponentId == this.fieldIdToFocus){
             console.dir(message);
             let myComponent = this.template.querySelector('select');

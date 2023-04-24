@@ -251,7 +251,7 @@ export default class GovDate extends LightningElement {
         this.setFocusSubscription = subscribe (
             this.messageContext,
             SET_FOCUS_MC, (message) => {
-                console.log('received message for componentId: '+ message.componentId);
+                // console.log('received message for componentId: '+ message.componentId);
                 this.handleSetFocusMessage(message);
             }
         )
