@@ -74,6 +74,13 @@ export default class ErrorMessages extends LightningElement {
     }
     // called during validation to update error states and messages
     handleValidationStateMessage(message) {
+        console.log('message.componentId: '+ message.componentId);
+        console.log('message.focusId: '+ message.focusId);
+        console.log('message.isValid: '+ message.isValid);
+        console.log('message.error: '+ message.error);
+        console.log('message.componentType: '+ message.componentType);
+        console.log('message.componentSelect: '+ message.componentSelect);
+        
         const component = this.components.find(component => component.id === message.componentId);
         
         if(component) {
@@ -82,6 +89,8 @@ export default class ErrorMessages extends LightningElement {
             } else {
                 component.isValid = message.isValid;
                 component.error = message.error;
+                component.focusId = message.focusId;
+                console.log('component.focusId: ', component.focusId);
             }
         } else {
             if(message.isValid === false) {
@@ -91,6 +100,8 @@ export default class ErrorMessages extends LightningElement {
                 component.error = message.error;
                 component.componentType = message.componentType;
                 component.componentSelect = message.componentSelect;
+                component.focusId = message.focusId;
+                console.log('component.focusId: ', component.focusId);
                 this.components.push(component);
             }
         }
@@ -104,6 +115,7 @@ export default class ErrorMessages extends LightningElement {
 
     handleClick(event) {
           let targetId = event.target.dataset.targetId; // Component id, i.e. input-text-18, date-input-day-47, date-input-month-47
-          publish(this.messageContext, SET_FOCUS_MC, { componentId: targetId });
+          console.log('targetId from govErrorMessages: ', targetId);
+          publish(this.messageContext, SET_FOCUS_MC, { componentId: targetId, focusId: targetId });
     }
 }

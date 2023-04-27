@@ -12,7 +12,7 @@
                     <ul class="govuk-list govuk-error-summary__list">
                         <template for:each={components} for:item="component">
                             <li key={component.id}>
-                                <a href="#" onclick={handleClick} onfocus={handleLinkFocus} onblur={handleLinkBlur} class={highlightedLinkClass} data-target-id={component.id} if:false={component.isValid}>{component.error}</a>
+                                <a href="#" onclick={handleClick} onfocus={handleLinkFocus} onblur={handleLinkBlur} class={highlightedLinkClass} data-target-id={component.focusId} if:false={component.isValid}>{component.error}</a>
                             </li>
                         </template>
                     </ul>
