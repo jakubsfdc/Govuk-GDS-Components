@@ -141,9 +141,9 @@ export default class GovFileUpload extends LightningElement {
         this.subscribeMCs();
 
         // publish the registration message after 0.1 sec to give other components time to initialise
-        // setTimeout(() => {
-        //     publish(this.messageContext, REGISTER_MC, { componentId: this.fieldId });
-        // }, 100);
+        setTimeout(() => {
+            publish(this.messageContext, REGISTER_MC, { componentId: this.fieldId });
+        }, 100);
     }
 
     renderedCallback() {
@@ -161,6 +161,8 @@ export default class GovFileUpload extends LightningElement {
     handleSetFocusMessage(message){
         // filter message to check if our component (id) needs to set focus
         let myComponentId = message.componentId;
+        console.log('myComponentId: ' + myComponentId);
+        console.log('this.inputFieldId: ' + this.inputFieldId);
         
         if(myComponentId == this.inputFieldId){
         
@@ -184,9 +186,10 @@ export default class GovFileUpload extends LightningElement {
             this.hasErrors = true;
         }
         publish(this.messageContext, VALIDATION_STATE_MC, {
-            componentId: this.inputFieldId, // this.fieldId,
+            componentId: this.fieldId,
             isValid: !this.hasErrors,
-            error: this.errorMessage
+            error: this.errorMessage,
+            focusId: this.inputFieldId
         });
         return !this.hasErrors;
     }

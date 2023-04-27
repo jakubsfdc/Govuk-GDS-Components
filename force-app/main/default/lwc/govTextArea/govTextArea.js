@@ -53,9 +53,9 @@ export default class GovTextArea extends LightningElement {
         this.subscribeMCs();
 
         // publish the registration message after 0.1 sec to give other components time to initialise
-        // setTimeout(() => {
-        //     publish(this.messageContext, REGISTER_MC, {componentId:this.textAreaFieldId});
-        // }, 100);
+        setTimeout(() => {
+            publish(this.messageContext, REGISTER_MC, {componentId:this.fieldId});
+        }, 100);
     }
 
     renderedCallback() {
@@ -221,9 +221,10 @@ export default class GovTextArea extends LightningElement {
 
         //console.log('CHECKBOX: Sending validation state message');
         publish(this.messageContext, VALIDATION_STATE_MC, {
-            componentId: this.textAreaFieldId, //this.fieldId,
+            componentId: this.fieldId,
             isValid: !this.hasErrors,
-            error: this.errorMessage
+            error: this.errorMessage,
+            focusId: this.textAreaFieldId
         });
     }
 
