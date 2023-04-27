@@ -67,6 +67,7 @@ export default class GovTextInput extends LightningElement {
 
         // publish the registration message after 0.1 sec to give other components time to initialise
         setTimeout(() => {
+            console.log('INSIDE connectedCallback this.textFieldId: '+ this.textFieldId);
             publish(this.messageContext, REGISTER_MC, { componentId: this.textFieldId });
         }, 100);
         
@@ -201,6 +202,7 @@ export default class GovTextInput extends LightningElement {
         this.validateSubscription = subscribe (
             this.messageContext,
             VALIDATION_MC, (message) => {
+                console.log('[govTextInput.js: subscribeMCs] returned form VALIDATION_MC');
                 this.handleValidateMessage(message);
             });
         
@@ -237,11 +239,18 @@ export default class GovTextInput extends LightningElement {
     }
 
     handleValidateMessage(message) {
+        console.log('INSIDE: [govTextInput.js: handleValidateMessage]' + message);
+        console.log('message.componentId: ' + message.componentId);
+        console.log('message.componentSelect: ' + message.componentSelect);
+        console.log('message.isValid: ' + message.isValid);
+        console.log('message.error: ' + message.error);
+        console.log('message.focusId: ' + message.focusId);
         this.handleValidate();
     }
 
     @api 
     handleValidate() {
+        console.log('INSIDE: [govTextInput.js: handleValidate]');
         this.hasErrors = false;
         if (this.required && this.value === '') {
             this.hasErrors = true;
@@ -253,11 +262,17 @@ export default class GovTextInput extends LightningElement {
             }
         }
         
+        console.log('[govTextInput.js: handleValidate]');
+        console.log('handleValidate: '+this.hasErrors);
+        console.log('this.textFieldId: ' + this.textFieldId);
+        console.log('this.errorMessage: ' + this.errorMessage);
+
         publish(this.messageContext, VALIDATION_STATE_MC, {
             componentId: this.textFieldId,
             componentSelect: 'INPUT',
             isValid: !this.hasErrors,
-            error: this.errorMessage
+            error: this.errorMessage,
+            focusId: this.textFieldId
         });
 
         return !this.hasErrors;

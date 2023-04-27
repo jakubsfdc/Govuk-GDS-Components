@@ -96,6 +96,7 @@ export default class ErrorMessages extends LightningElement {
             if(message.isValid === false) {
                 const component = {};
                 component.id = message.componentId;
+                console.log('component.id: ', component.id);
                 component.isValid = message.isValid;
                 component.error = message.error;
                 component.componentType = message.componentType;
