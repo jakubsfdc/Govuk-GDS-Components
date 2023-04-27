@@ -501,7 +501,8 @@ export default class GovDate extends LightningElement {
            componentType: this.componentTypeName,
            componentSelect: this.componentSelectorName,
            isValid: false,
-           error: errMsg
+           error: errMsg,
+           focusId: idForField
        });
     }
 
@@ -510,7 +511,8 @@ export default class GovDate extends LightningElement {
        publish(this.messageContext, VALIDATION_STATE_MC, {
            componentId: idForField,
            isValid: true,
-           error: ""
+           error: "",
+           focusId: idForField
        });
     }
 
