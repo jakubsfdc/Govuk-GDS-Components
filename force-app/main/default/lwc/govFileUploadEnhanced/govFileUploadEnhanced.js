@@ -131,9 +131,9 @@ export default class GovFileUploadEnhanced extends LightningElement {
         this.subscribeMCs();
 
         // publish the registration message after 0.1 sec to give other components time to initialise
-        // setTimeout(() => {
-        //     publish(this.messageContext, REGISTER_MC, {componentId:this.fieldId});
-        // }, 100);
+        setTimeout(() => {
+            publish(this.messageContext, REGISTER_MC, {componentId:this.inputFieldId});
+        }, 100);
     }
 
     disconnectedCallback() {
@@ -402,7 +402,9 @@ export default class GovFileUploadEnhanced extends LightningElement {
     }
 
     handleValidateMessage(message) {
-        this.handleValidate()
+        console.log('handleValidateMessage: ', message);
+        console.log('handleValidateMessage compid: ', message.componentId);
+        this.handleValidate();
     }
 
     @api handleValidate() {
@@ -413,11 +415,15 @@ export default class GovFileUploadEnhanced extends LightningElement {
         } else {
             this.hasErrors = false;
         }
-
+        console.log('govFileUploadEnhanced: handleValidate');
+        console.log('handleValidate: ', this.hasErrors);
+        console.log('handleValidate: ', this.errorMessage);
+        console.log('handleValidate: ', this.inputFieldId);
         publish(this.messageContext, VALIDATION_STATE_MC, {
-            componentId: this.inputFieldId, // this.fieldId,
+            componentId: this.inputFieldId,
             isValid: !this.hasErrors,
-            error: this.errorMessage
+            error: this.errorMessage,
+            focusId: this.inputFieldId
         });
     }
 
