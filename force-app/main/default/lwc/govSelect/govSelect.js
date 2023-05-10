@@ -44,30 +44,32 @@ export default class GovSelect extends LightningElement {
         this.getHSize(); 
         
         if(this.picklist !== '' && this.picklist !== undefined && this.picklist !== null) {
+            setTimeout(() => {
             //call the apex to get the values
-            getPicklistValuesByObjectField({
-                strSObjectFieldName: this.picklist
-            })
-            .then(result => {
-                    this.selectOptions = [];
-                    let selectOption = {};
-                    selectOption.key = `csv-value-no-value`;
-                    selectOption.label = "Please select";
-                    selectOption.value = "";
-                    this.selectOptions.push(selectOption);
-
-                    for(let i=0; i<result.length; i++) {
+                getPicklistValuesByObjectField({
+                    strSObjectFieldName: this.picklist
+                })
+                .then(result => {
+                        this.selectOptions = [];
                         let selectOption = {};
-                        selectOption.key = `picklist-value-${i}`;
-                        selectOption.value = result[i];
-                        selectOption.label = result[i];
-                        selectOption.selected = (this.value === result[i]);
+                        selectOption.key = `csv-value-no-value`;
+                        selectOption.label = "Please select";
+                        selectOption.value = "";
                         this.selectOptions.push(selectOption);
-                    }
-                })
-                .catch(error => {
-                    console.error(`Select:connectedCallback - could not get picklist values due to ${error.message}`);
-                })
+
+                        for(let i=0; i<result.length; i++) {
+                            let selectOption = {};
+                            selectOption.key = `picklist-value-${i}`;
+                            selectOption.value = result[i];
+                            selectOption.label = result[i];
+                            selectOption.selected = (this.value === result[i]);
+                            this.selectOptions.push(selectOption);
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Select:connectedCallback - could not get picklist values due to ${error.message}`);
+                    })
+            }, 100);
         } else {
             // use the option labels and option values
             const optionLabelsArray = this.optionLabels.split(',');

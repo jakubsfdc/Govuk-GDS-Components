@@ -210,6 +210,8 @@ export default class GovNavigationButtons extends LightningElement {
             console.log(`NAVIGATION_BUTTONS: Component ${this.components[i].id} error is ${this.components[i].error}`);
             if(this.components[i].id == undefined){
                 // remove empty component form array
+                console.log('have component with empty id: + ' + this.components[i].id);
+                console.log('... componentId: + ' + this.components[i].componentId);
                 this.components.splice(i,1);
             }
         }
