@@ -40,7 +40,7 @@ export default class GovNavigationButtons extends LightningElement {
     // Lifecycle listeners
 
     connectedCallback() {
-        console.log(`NAVIGATION_BUTTONS: Connected callback START components are ${JSON.stringify(this.components)}`);
+        // console.log(`NAVIGATION_BUTTONS: Connected callback START components are ${JSON.stringify(this.components)}`);
         // subscribe to registration events
         this.subscribeMCs();
 
@@ -91,11 +91,11 @@ export default class GovNavigationButtons extends LightningElement {
                 this.rightButtons.push(button);
             }
         }
-        console.log(`NAVIGATION_BUTTONS: Rendered callback END components are ${JSON.stringify(this.components)}`);
+        // console.log(`NAVIGATION_BUTTONS: Rendered callback END components are ${JSON.stringify(this.components)}`);
     }
 
     renderedCallback() {
-        console.log(`NAVIGATION_BUTTONS: Rendered callback components are ${JSON.stringify(this.components)}`);
+        // console.log(`NAVIGATION_BUTTONS: Rendered callback components are ${JSON.stringify(this.components)}`);
     }
 
     disconnectedCallback() {
@@ -118,7 +118,7 @@ export default class GovNavigationButtons extends LightningElement {
                 component.isValid = false;
                 //this.focusOnErroBox();
             })
-            console.log('NAVIGATION_BUTTONS: Sending validation message ' + this.fieldId );
+            // console.log('NAVIGATION_BUTTONS: Sending validation message ' + this.fieldId );
             publish(this.messageContext, VALIDATE_MC, { componentId: this.fieldId });
         } else if(this.action === 'NEXT' && this.availableActions.find(action => action === 'NEXT')) {
             const event = new FlowNavigationNextEvent();
@@ -139,11 +139,11 @@ export default class GovNavigationButtons extends LightningElement {
             const event = new FlowNavigationBackEvent();
             this.dispatchEvent(event);
         } else {
-            console.log('NAVIGATION_BUTTONS: No action selected');
+            // console.log('NAVIGATION_BUTTONS: No action selected');
             if(this.components.length > 0){
                 this.components.forEach(component => {
                     component.isValid = false;
-                    console.log('NAVIGATION_BUTTONS: Set isValid to false for comp ID: ' + this.fieldId );
+                    // console.log('NAVIGATION_BUTTONS: Set isValid to false for comp ID: ' + this.fieldId );
                 })
                 publish(this.messageContext, VALIDATE_MC, { componentId: this.fieldId });
             }
@@ -181,37 +181,37 @@ export default class GovNavigationButtons extends LightningElement {
 
 
     handleRegistrationMessage(message) {
-        console.log(`NAVIGATION_BUTTONS: Component BEFORE adding are ${JSON.stringify(this.components)}`);
-        console.log('  ');
-        console.log(`NAVIGATION_BUTTONS: Received registration message from component ${JSON.stringify(message)}`);
+        // console.log(`NAVIGATION_BUTTONS: Component BEFORE adding are ${JSON.stringify(this.components)}`);
+        // console.log('  ');
+        // console.log(`NAVIGATION_BUTTONS: Received registration message from component ${JSON.stringify(message)}`);
         const component = {};
         component.id = message.componentId;
         component.isValid = true;
         component.error = "";
         this.components.push(component);
-        console.log(`NAVIGATION_BUTTONS: Component are ${JSON.stringify(this.components)}`);
+        // console.log(`NAVIGATION_BUTTONS: Component are ${JSON.stringify(this.components)}`);
     }
 
     handleValidationUpdate(message) {
-        console.log(`NAVIGATION_BUTTONS: Received validation state message from component ${JSON.stringify(message)}`);
+        // console.log(`NAVIGATION_BUTTONS: Received validation state message from component ${JSON.stringify(message)}`);
         // update the component that sent the message
         // filtering components to find the one that matches the id
         const component = this.components.find(component => component.id === message.componentId);
         if(component) {
-             console.log(`NAVIGATION_BUTTONS: Setting component ${component.id} to ${message.isValid}`);
+             // console.log(`NAVIGATION_BUTTONS: Setting component ${component.id} to ${message.isValid}`);
             component.isValid = message.isValid;
         } // else {
         //      console.log(`NAVIGATION_BUTTONS: This shouldn't really happen but creating new component ${message.componentId} with status ${message.isValid}`);
         //     this.components.push({id:message.componentId,isValid:message.isValid});
         // }
-        console.log(`NAVIGATION_BUTTONS: components are ${JSON.stringify(this.components)}`);
+        // console.log(`NAVIGATION_BUTTONS: components are ${JSON.stringify(this.components)}`);
         for(let i=0; i<this.components.length; i++ ){
-            console.log(`NAVIGATION_BUTTONS: Component ${this.components[i].id} is valid? ${this.components[i].isValid}`);
-            console.log(`NAVIGATION_BUTTONS: Component ${this.components[i].id} error is ${this.components[i].error}`);
+            // console.log(`NAVIGATION_BUTTONS: Component ${this.components[i].id} is valid? ${this.components[i].isValid}`);
+            // console.log(`NAVIGATION_BUTTONS: Component ${this.components[i].id} error is ${this.components[i].error}`);
             if(this.components[i].id == undefined){
                 // remove empty component form array
-                console.log('have component with empty id: + ' + this.components[i].id);
-                console.log('... componentId: + ' + this.components[i].componentId);
+                // console.log('have component with empty id: + ' + this.components[i].id);
+                // console.log('... componentId: + ' + this.components[i].componentId);
                 this.components.splice(i,1);
             }
         }
@@ -220,10 +220,10 @@ export default class GovNavigationButtons extends LightningElement {
         const invalidComponents = this.components.filter(component => component.isValid === false);
         
         if(invalidComponents.length === 0) {
-             console.log(`NAVIGATION_BUTTONS: All components are valid, moving along, action is ${this.action}`);
+             // console.log(`NAVIGATION_BUTTONS: All components are valid, moving along, action is ${this.action}`);
             if (this.action === 'NEXT' &&
                 this.availableActions.find(action => action === 'NEXT')) {
-                    console.log('Next pressed')
+                    // console.log('Next pressed')
                 const event = new FlowNavigationNextEvent();
                 this.dispatchEvent(event);
             } else if (this.action === 'NEXT' &&
@@ -240,10 +240,10 @@ export default class GovNavigationButtons extends LightningElement {
                 this.dispatchEvent(event);
             }
         } else {
-             console.log(`NAVIGATION_BUTTONS: There are invalid components.`);
+             // console.log(`NAVIGATION_BUTTONS: There are invalid components.`);
             for(let i=0; i<invalidComponents.length; i++ ){
                  let myComp = invalidComponents[i];
-                 console.log(`NAVIGATION_BUTTONS: Component ${myComp.id} is invalid.`);
+                 // console.log(`NAVIGATION_BUTTONS: Component ${myComp.id} is invalid.`);
             }
         }
     }

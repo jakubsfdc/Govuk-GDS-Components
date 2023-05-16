@@ -87,11 +87,11 @@ export default class GovCheckboxes extends LightningElement {
             }
         }
 
-        console.log('this.checkboxArray BEFORE assignment for fieldId: ' + this.fieldId + ' ' + this.checkboxArray);
-        for(let i=0; i<this.checkboxArray.length; i++){
-            console.log('this.checkboxArray[i].checkboxLabel ' + this.checkboxArray[i].checkboxLabel);
-            console.log('this.checkboxArray[i].checkboxValue ' + this.checkboxArray[i].checkboxValue);
-        }
+        // console.log('this.checkboxArray BEFORE assignment for fieldId: ' + this.fieldId + ' ' + this.checkboxArray);
+        // for(let i=0; i<this.checkboxArray.length; i++){
+        //     console.log('this.checkboxArray[i].checkboxLabel ' + this.checkboxArray[i].checkboxLabel);
+        //     console.log('this.checkboxArray[i].checkboxValue ' + this.checkboxArray[i].checkboxValue);
+        // }
 
         if(this.picklistField !== '' && this.picklistField !== undefined && this.picklistField !== null) {
             setTimeout(() => {
@@ -115,11 +115,11 @@ export default class GovCheckboxes extends LightningElement {
                         this.checkboxArray.push(checkboxObj);     
                     }
 
-                    console.log('this.checkboxArray AFTER assignment form PICKLIST for fieldId: ' + this.fieldId + ' ' + this.checkboxArray);
-                    for(let i=0; i<this.checkboxArray.length; i++){
-                        console.log('this.checkboxArray[i].checkboxLabel ' + this.checkboxArray[i].checkboxLabel);
-                        console.log('this.checkboxArray[i].checkboxValue ' + this.checkboxArray[i].checkboxValue);
-                    }
+                    // console.log('this.checkboxArray AFTER assignment form PICKLIST for fieldId: ' + this.fieldId + ' ' + this.checkboxArray);
+                    // for(let i=0; i<this.checkboxArray.length; i++){
+                    //     console.log('this.checkboxArray[i].checkboxLabel ' + this.checkboxArray[i].checkboxLabel);
+                    //     console.log('this.checkboxArray[i].checkboxValue ' + this.checkboxArray[i].checkboxValue);
+                    // }
 
 
                 })
@@ -145,11 +145,11 @@ export default class GovCheckboxes extends LightningElement {
             }
 
 
-            console.log('this.checkboxArray AFTER MANUAL assignment for fieldId: ' + this.fieldId + ' ' + this.checkboxArray);
-            for(let i=0; i<this.checkboxArray.length; i++){
-                console.log('this.checkboxArray[i].checkboxLabel ' + this.checkboxArray[i].checkboxLabel);
-                console.log('this.checkboxArray[i].checkboxValue ' + this.checkboxArray[i].checkboxValue);
-            }
+            // console.log('this.checkboxArray AFTER MANUAL assignment for fieldId: ' + this.fieldId + ' ' + this.checkboxArray);
+            // for(let i=0; i<this.checkboxArray.length; i++){
+            //     console.log('this.checkboxArray[i].checkboxLabel ' + this.checkboxArray[i].checkboxLabel);
+            //     console.log('this.checkboxArray[i].checkboxValue ' + this.checkboxArray[i].checkboxValue);
+            // }
 
 
         }
@@ -188,13 +188,13 @@ export default class GovCheckboxes extends LightningElement {
         this.subscribeMCs();
 
         // publish the registration message after 0.1 sec to give other components time to initialise
-        console.log('*************************');
+        // console.log('*************************');
         this.checkboxFieldIdForFocus = this.fieldId; // assigning the fieldId as the field to focus on the return path form validation 
-        console.log('REGISTERING COMPONENT: GovCheckboxe: '+ this.fieldId + ' and focus ' + this.checkboxFieldIdForFocus);
+        // console.log('REGISTERING COMPONENT: GovCheckboxe: '+ this.fieldId + ' and focus ' + this.checkboxFieldIdForFocus);
         setTimeout(() => {
             publish(this.messageContext, REGISTER_MC, {componentId:this.fieldId, focusId: this.checkboxFieldIdForFocus});
         }, 100);
-        console.log('*************************');
+        // console.log('*************************');
     }
 
     disconnectedCallback() {
@@ -204,12 +204,12 @@ export default class GovCheckboxes extends LightningElement {
     allCheckboxFieldComps; //// 
     renderedCallback() {
         setTimeout(() => {
-            for(let i=0; i<this.checkboxArray.length; i++){
-                console.log('checkboxArray[i].label: ' + this.checkboxArray[i].label);
-                console.log('checkboxArray[i].value: ' + this.checkboxArray[i].checkboxValue);
-            }
+            // for(let i=0; i<this.checkboxArray.length; i++){
+            //     console.log('checkboxArray[i].label: ' + this.checkboxArray[i].label);
+            //     console.log('checkboxArray[i].value: ' + this.checkboxArray[i].checkboxValue);
+            // }
             const firstChecboxName = this.checkboxArray[0].checkboxLabel;
-            console.log('firstCheckoxName: ' + firstChecboxName);
+            // console.log('firstCheckoxName: ' + firstChecboxName);
 
             this.allCheckboxFieldComps = this.template.querySelectorAll('input[name="'+firstChecboxName+'"]');
 
@@ -333,9 +333,9 @@ export default class GovCheckboxes extends LightningElement {
         this.validateSubscription = subscribe (
             this.messageContext,
             VALIDATION_MC, (message) => {
-                console.log('validation_MC response in govCheckboxes:');
-                console.log(message.componentId);
-                console.log(message.focusId);
+                // console.log('validation_MC response in govCheckboxes:');
+                // console.log(message.componentId);
+                // console.log(message.focusId);
                 this.handleValidateMessage(message);
             });
     
@@ -343,9 +343,9 @@ export default class GovCheckboxes extends LightningElement {
         this.setFocusSubscription = subscribe (
             this.messageContext,
             SET_FOCUS_MC, (message) => {
-                console.log('setFocus_MC response in govCheckboxes:');
-                console.log(message.componentId);
-                console.log(message.focusId);
+                // console.log('setFocus_MC response in govCheckboxes:');
+                // console.log(message.componentId);
+                // console.log(message.focusId);
                 this.handleSetFocusMessage(message);
             }
         )
@@ -361,24 +361,24 @@ export default class GovCheckboxes extends LightningElement {
     handleSetFocusMessage(message){
         // filter message to check if our component (id) needs to set focus
         let myComponentId = message.componentId;
-        console.log('************');
-console.log(message.componentId);
+        // console.log('************');
+    // console.log(message.componentId);
     // console.log('this.fieldId' + this.fieldId);
     //     if (myComponentId == this.fieldId) {
     //         // set focus
     //         let myComponent = this.template.querySelector('input');
     //         myComponent.focus();
     //     }
-    console.log('************');
+    // console.log('************');
 
-        console.log('Setting FOCUS: ');
-        console.log('myComponentId: '+myComponentId);
-        console.log('this.checkboxFieldIdForFocus: '+this.checkboxFieldIdForFocus);
-        console.log('this.fieldId: '+this.fieldId);
+        // console.log('Setting FOCUS: ');
+        // console.log('myComponentId: '+myComponentId);
+        // console.log('this.checkboxFieldIdForFocus: '+this.checkboxFieldIdForFocus);
+        // console.log('this.fieldId: '+this.fieldId);
 
         if(myComponentId == this.checkboxFieldIdForFocus){
-            console.log('May 16th');
-            console.log('Setting FOCUS on: ' + this.checkboxFieldIdForFocus);
+            
+            //console.log('Setting FOCUS on: ' + this.checkboxFieldIdForFocus);
             // console.dir(message);
             //let myComponent = this.template.querySelector('input');
             //console.log('what component:' + this.allCheckboxFieldComps);
@@ -401,14 +401,14 @@ console.log(message.componentId);
         else {
             this.hasErrors = false;
         }
-        console.log('inside handleValidation in govCheckboxes');
-        console.log('this.required:  ' + this.required);
-        console.log('this.checked:  ' + this.checked);
-        console.log('this.hasErrors:  ' + this.hasErrors);
-        console.log('this.errorMessage:  ' + this.errorMessage);
-        console.log('this.fieldId:  ' + this.fieldId);
+        // console.log('inside handleValidation in govCheckboxes');
+        // console.log('this.required:  ' + this.required);
+        // console.log('this.checked:  ' + this.checked);
+        // console.log('this.hasErrors:  ' + this.hasErrors);
+        // console.log('this.errorMessage:  ' + this.errorMessage);
+        // console.log('this.fieldId:  ' + this.fieldId);
 
-        console.log('handleValidation : this.checkboxFieldIdForFocus: '+this.checkboxFieldIdForFocus);
+        // console.log('handleValidation : this.checkboxFieldIdForFocus: '+this.checkboxFieldIdForFocus);
         //console.log('CHECKBOX: Sending validation state message');
         publish(this.messageContext, VALIDATION_STATE_MC, {
             componentId: this.fieldId, //  // this.fieldId,
