@@ -201,6 +201,7 @@ export default class GovCheckboxes extends LightningElement {
         this.unsubscribeMCs();
     }
 
+    allCheckboxFieldComps; //// 
     renderedCallback() {
         setTimeout(() => {
             for(let i=0; i<this.checkboxArray.length; i++){
@@ -209,7 +210,9 @@ export default class GovCheckboxes extends LightningElement {
             }
             const firstChecboxName = this.checkboxArray[0].checkboxLabel;
             console.log('firstCheckoxName: ' + firstChecboxName);
-            let allCheckboxFieldComps = this.template.querySelectorAll('input[name="'+firstChecboxName+'"]');
+
+            this.allCheckboxFieldComps = this.template.querySelectorAll('input[name="'+firstChecboxName+'"]');
+
             this.checkboxFieldIdForFocus = allCheckboxFieldComps[0].id;
 
             if(this.initialised) {
@@ -374,10 +377,13 @@ console.log(message.componentId);
         console.log('this.fieldId: '+this.fieldId);
 
         if(myComponentId == this.checkboxFieldIdForFocus){
+            console.log('May 16th');
             console.log('Setting FOCUS on: ' + this.checkboxFieldIdForFocus);
             // console.dir(message);
-            let myComponent = this.template.querySelector('input');
-            myComponent.focus();
+            //let myComponent = this.template.querySelector('input');
+            //console.log('what component:' + this.allCheckboxFieldComps);
+            this.allCheckboxFieldComps[0].focus();
+            // myComponent.focus();
         }
     }
 
