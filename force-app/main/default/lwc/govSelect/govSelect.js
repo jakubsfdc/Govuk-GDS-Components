@@ -63,6 +63,12 @@ export default class GovSelect extends LightningElement {
                             selectOption.value = result[i];
                             selectOption.label = result[i];
                             selectOption.selected = (this.value === result[i]);
+
+                            console.log('selectOption.key:' + selectOption.key);
+                            console.log('selectOption.value:' + selectOption.value);
+                            console.log('selectOption.label:' + selectOption.label);
+                            console.log('selectOption.selected:' + selectOption.selected);
+
                             this.selectOptions.push(selectOption);
                         }
                     })
@@ -101,6 +107,12 @@ export default class GovSelect extends LightningElement {
     }
 
     renderedCallback(){
+        var myAtt = this.template.querySelector('select');
+        console.log('myAtt: '+myAtt);
+        var myAttId = myAtt.getAttribute('id'); 
+        console.log('myAttId: ' + myAttId);
+
+        
         this.fieldIdToFocus = this.template.querySelector('select').getAttribute('id'); 
     }
 
