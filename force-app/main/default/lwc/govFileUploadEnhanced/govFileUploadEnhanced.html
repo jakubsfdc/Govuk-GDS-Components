@@ -2,7 +2,7 @@
     <c-gov-c-s-s-provider></c-gov-c-s-s-provider>
     <div class="govuk-width-container js-enabled">
 
-            <lightning-spinner if:true={loading} alternative-text="Uploading..." size="small"></lightning-spinner>
+            <lightning-spinner if:true={loading} alternative-text="Processing..." size="small"></lightning-spinner>
 
             <lightning-layout multiple-rows="true">
 
@@ -58,7 +58,7 @@
                         <a class="govuk-link" href="#" onclick={deleteDocument} 
                         data-documentid={objFile.documentId} 
                         data-contentversionid={objFile.contentVersionId}
-                        aria-label={objFile.removeFileAriaDescription}>
+                        aria-labelledby={objFile.removeFileAriaDescription}>
                           Remove<span class="govuk-visually-hidden"> file uploaded</span>
                         </a>
                       </dd>
