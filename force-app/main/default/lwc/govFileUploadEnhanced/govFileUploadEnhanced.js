@@ -104,7 +104,7 @@ export default class GovFileUploadEnhanced extends LightningElement {
     }
 
     connectedCallback(){
-
+        console.log('*** this.recordId: '+ this.recordId);
         let cachedSelection = sessionStorage.getItem(this.sessionKey);
         if(cachedSelection){
             this.processFiles(JSON.parse(cachedSelection));
@@ -112,6 +112,7 @@ export default class GovFileUploadEnhanced extends LightningElement {
             getExistingFiles({recordId: this.recordId})
                 .then((files) => {
                     if(files != undefined && files.length > 0){
+                        console.log('*** files: ' + files);
                         this.processFiles(files);
                     } else {
                         this.communicateEvent(this.docIds,this.versIds,this.fileNames,this.objFiles);
@@ -157,11 +158,14 @@ export default class GovFileUploadEnhanced extends LightningElement {
 
     handleUploadFinished(files) {
         
-
+        console.log('*** files: '+ files);
         let objFiles = [];
         let versIds = [];
 
         files.forEach(file => {
+            console.log('*** file.documentId' + file.documentId);
+            console.log('*** file.contentVersionId' + file.contentVersionId);
+            
 
             let name;
             if(this.overriddenFileName){
@@ -177,7 +181,7 @@ export default class GovFileUploadEnhanced extends LightningElement {
                 removeFileAriaDescription: "Remove file" + name
             }
 
-            console.log('objFile.removeFileAriaDescription: ' + objFile.removeFileAriaDescription);
+            console.log('*** objFile.removeFileAriaDescription: ' + objFile.removeFileAriaDescription);
 
             objFiles.push(objFile);
 
@@ -193,9 +197,12 @@ export default class GovFileUploadEnhanced extends LightningElement {
         }
         if(this.recordId){
             createContentDocLink({versIds: versIds, encodedKey: this.key, visibleToAllUsers: this.visibleToAllUsers})
-                .catch(error => {
+            .then(result => {
+                console.log('*** createContentDocLink completed: '+ result);
+            })
+            .catch(error => {
                     this.showErrors(this.reduceErrors(error).toString());
-                });
+            });
         }
 
         this.processFiles(objFiles);
@@ -205,7 +212,16 @@ export default class GovFileUploadEnhanced extends LightningElement {
 
     processFiles(files){
         
+        
+
         files.forEach(file => {
+
+            console.log('file.name: '+ file.name);
+            console.log('file.documentId: '+ file.documentId);
+            console.log('file.contentVersionId: '+ file.contentVersionId);
+            console.log('file.versionId: '+ file.versionId);
+            
+
             let filetype;
             if(this.icon == null){
                 filetype = getIconSpecs(file.name.split('.').pop());
