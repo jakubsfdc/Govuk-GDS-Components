@@ -195,6 +195,8 @@ export default class GovFileUploadEnhanced extends LightningElement {
                     this.showErrors(this.reduceErrors(error).toString());
                 });
         }
+
+        console.log('*** about to call createContentDocLink({versIds:'+ versIds +', encodedKey:'+ this.key + ', visibleToAllUsers:'+  this.visibleToAllUsers+'})');
         if(this.recordId){
             createContentDocLink({versIds: versIds, encodedKey: this.key, visibleToAllUsers: this.visibleToAllUsers})
             .then(result => {
