@@ -22,9 +22,10 @@
                 <div id="hint-text" class="govuk-hint slds-hyphenate" if:true={hintText}>
                     {hintText}
                 </div>
+                <p>Hey ho!</p>
                 <select class="govuk-select"
                         id="select"
-                        name="select"
+                        name={fieldId}
                         onchange={handleOnChange}>
                     <template for:each={selectOptions} for:item="option">
                         <option key={option.key}

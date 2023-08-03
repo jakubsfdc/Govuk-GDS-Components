@@ -108,13 +108,15 @@ export default class GovSelect extends LightningElement {
 
     renderedCallback(){
         try {
-            var myAtt = this.template.querySelector('select');
+
+            var myAtt = this.template.querySelectorAll('select[name="'+fieldId+'"]');
+            // var myAtt = this.template.querySelector('select');
             console.log('myAtt: '+myAtt);
-            var myAttId = myAtt.getAttribute('id'); 
-            console.log('myAttId: ' + myAttId);
+            // var myAttId = myAtt.getAttribute('id'); 
+            // console.log('myAttId: ' + myAttId);
 
             
-            this.fieldIdToFocus = this.template.querySelector('select').getAttribute('id'); 
+            this.fieldIdToFocus = this.template.querySelector('select[name="'+fieldId+'"]').getAttribute('id'); 
         } catch( ex){
             console.error('Error!!!!!: ' + ex);
         }
