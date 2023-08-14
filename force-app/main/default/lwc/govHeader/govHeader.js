@@ -14,8 +14,9 @@ export default class GovHeader extends NavigationMixin(LightningElement) {
     crownLogo = CROWN_LOGO;
 
     // refs #67 proto
-    // headerBannerRole = '';
-
+    @api headerBannerRole = ''; // deprecated
+    @api displayMenu;
+    
     @api headerLabel = "GOV.UK";
     @api headerURL = "#";
     @api serviceName = "Service Name";
