@@ -102,21 +102,36 @@ export default class GovSelect extends LightningElement {
 
         // publish the registration message after 0.1 sec to give other components time to initialise
         setTimeout(() => {
-            publish(this.messageContext, REGISTER_MC, {componentId:this.fieldId});
+            //publish(this.messageContext, REGISTER_MC, {componentId:this.fieldId});
+            publish(this.messageContext, REGISTER_MC, {componentId:this.fieldId, focusId: this.fieldIdToFocus});
         }, 100);
     }
 
     renderedCallback(){
         try {
+           
+            const selectElements = this.template.querySelectorAll('select[name="'+this.fieldId+'"]');
+            console.log('*** MY COMP ' + this.fieldId + ' ***');
+            console.log('*** all: ' + selectElements + ' ***');
+            console.log('*** first el: ' + selectElements[0] + ' ***');
+            
+            selectElements.forEach((element) => {
+                const id = element.getAttribute('id');
+                const name = element.getAttribute('name');
+                console.log('*** id:', id);
+                console.log('*** name:', name);
+              });
 
-            var myAtt = this.template.querySelectorAll('select[name="'+fieldId+'"]');
+            var myAtt = this.template.querySelectorAll('select[name="'+this.fieldId+'"]');
             // var myAtt = this.template.querySelector('select');
-            console.log('myAtt: '+myAtt);
+            console.log('**** myAtt: '+myAtt);
             // var myAttId = myAtt.getAttribute('id'); 
             // console.log('myAttId: ' + myAttId);
 
             
-            this.fieldIdToFocus = this.template.querySelector('select[name="'+fieldId+'"]').getAttribute('id'); 
+            // this.fieldIdToFocus = this.template.querySelectorAll('select[name="'+this.fieldId+'"]').getAttribute('id'); 
+            this.fieldIdToFocus = myAtt[0].id
+            console.log('**** >>> fieldIdToFocus id: '+this.fieldIdToFocus);
         } catch( ex){
             console.error('Error!!!!!: ' + ex);
         }
@@ -227,13 +242,13 @@ export default class GovSelect extends LightningElement {
         this.validateSubscription = subscribe (
             this.messageContext,
             VALIDATION_MC, (message) => {
-                // console.log('message form validation '+ message);
-                // console.log('message form validation '+ message.isValid);
-                // console.log('message form validation '+ message.error);
-                // console.log('message form validation '+ message.componentSelect);
-                // console.log('message form validation '+ message.componentType);
-                // console.log('message form validation '+ message.componentId);
-                // console.dir(message);
+                console.log('message form validation '+ message);
+                console.log('message form validation '+ message.isValid);
+                console.log('message form validation '+ message.error);
+                console.log('message form validation '+ message.componentSelect);
+                console.log('message form validation '+ message.componentType);
+                console.log('message form validation '+ message.componentId);
+                console.dir(message);
                 this.handleValidateMessage(message);
             });
 
@@ -241,6 +256,7 @@ export default class GovSelect extends LightningElement {
         this.setFocusSubscription = subscribe (
             this.messageContext,
             SET_FOCUS_MC, (message) => {
+                console.log('from this.setFocusSubscription message:' + message);
                 this.handleSetFocusMessage(message);
             }
         )
@@ -256,10 +272,12 @@ export default class GovSelect extends LightningElement {
     handleSetFocusMessage(message){
         // filter message to check if our component (id) needs to set focus
         let myComponentId = message.componentId;
-        // console.log('myComponentId: ' + myComponentId);
+        console.log('**** myComponentId: ' + myComponentId);
         if(myComponentId == this.fieldIdToFocus){
             console.dir(message);
-            let myComponent = this.template.querySelector('select');
+            // let myComponent = this.template.querySelector('select');
+            let myComponent = this.template.querySelectorAll('select[name="'+this.fieldId+'"]');
+            // this.template.querySelector('select[name="'+this.fieldId+'"]');
             // console.log('myComponent: '+ myComponent);
             // console.log('myComponent: '+ myComponent.id);
             // console.log('myComponent: '+ myComponent.innerHTML);

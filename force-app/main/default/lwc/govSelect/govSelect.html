@@ -23,7 +23,7 @@
                     {hintText}
                 </div>
                 <select class="govuk-select"
-                        id="select"
+                        id={fieldId}
                         name={fieldId}
                         onchange={handleOnChange}>
                     <template for:each={selectOptions} for:item="option">
