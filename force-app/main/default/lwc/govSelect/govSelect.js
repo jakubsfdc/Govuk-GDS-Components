@@ -64,10 +64,10 @@ export default class GovSelect extends LightningElement {
                             selectOption.label = result[i];
                             selectOption.selected = (this.value === result[i]);
 
-                            console.log('selectOption.key:' + selectOption.key);
-                            console.log('selectOption.value:' + selectOption.value);
-                            console.log('selectOption.label:' + selectOption.label);
-                            console.log('selectOption.selected:' + selectOption.selected);
+                            // console.log('selectOption.key:' + selectOption.key);
+                            // console.log('selectOption.value:' + selectOption.value);
+                            // console.log('selectOption.label:' + selectOption.label);
+                            // console.log('selectOption.selected:' + selectOption.selected);
 
                             this.selectOptions.push(selectOption);
                         }
@@ -111,28 +111,33 @@ export default class GovSelect extends LightningElement {
         try {
            
             const selectElements = this.template.querySelectorAll('select[name="'+this.fieldId+'"]');
-            console.log('*** MY COMP ' + this.fieldId + ' ***');
-            console.log('*** all: ' + selectElements + ' ***');
-            console.log('*** first el: ' + selectElements[0] + ' ***');
+            // console.log('*** MY COMP ' + this.fieldId + ' ***');
+            // console.log('*** all: ' + selectElements + ' ***');
+            // console.log('*** first el: ' + selectElements[0] + ' ***');
             
-            selectElements.forEach((element) => {
-                const id = element.getAttribute('id');
-                const name = element.getAttribute('name');
-                console.log('*** id:', id);
-                console.log('*** name:', name);
-              });
+            if(selectElements && selectElements.length ==1){
+                selectElements.forEach((element) => {
+                    const id = element.getAttribute('id');
+                    const name = element.getAttribute('name');
+                    // console.log('*** id:', id);
+                    // console.log('*** name:', name);
+                    this.fieldIdToFocus = id; // myAtt[0].id
+                });
+            } else {
+                console.log('*** Error: Two elemements with same Name. Change name of components so they are unique.');
+            }
 
-            var myAtt = this.template.querySelectorAll('select[name="'+this.fieldId+'"]');
+            // var myAtt = this.template.querySelectorAll('select[name="'+this.fieldId+'"]');
             // var myAtt = this.template.querySelector('select');
-            console.log('**** myAtt: '+myAtt);
+            // console.log('**** myAtt: '+myAtt);
             // var myAttId = myAtt.getAttribute('id'); 
             // console.log('myAttId: ' + myAttId);
 
             
             // this.fieldIdToFocus = this.template.querySelectorAll('select[name="'+this.fieldId+'"]').getAttribute('id'); 
-            this.fieldIdToFocus = myAtt[0].id
-            console.log('**** >>> fieldIdToFocus id: '+this.fieldIdToFocus);
-        } catch( ex){
+            // this.fieldIdToFocus = myAtt[0].id
+            // console.log('**** >>> fieldIdToFocus id: '+this.fieldIdToFocus);
+        } catch(ex){
             console.error('Error!!!!!: ' + ex);
         }
     }
