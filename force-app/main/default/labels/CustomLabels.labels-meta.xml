@@ -129,12 +129,12 @@
         <value>Enter a year using numbers only</value>
     </labels>
     <labels>
-        <fullName>uxg_Year_label</fullName>
+        <fullName>uxg_Remove_File_Confirmation</fullName>
         <categories>UXGOV</categories>
         <language>en_US</language>
-        <protected>false</protected>
-        <shortDescription>uxg Year label</shortDescription>
-        <value>Year</value>
+        <protected>true</protected>
+        <shortDescription>uxg Remove file confirmation</shortDescription>
+        <value>File {0} removed</value>
     </labels>
     <labels>
         <fullName>uxg_Skiplink_label</fullName>
@@ -143,5 +143,13 @@
         <protected>false</protected>
         <shortDescription>uxg Skiplink label</shortDescription>
         <value>Skip to main content</value>
+    </labels>
+    <labels>
+        <fullName>uxg_Year_label</fullName>
+        <categories>UXGOV</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>uxg Year label</shortDescription>
+        <value>Year</value>
     </labels>
 </CustomLabels>

@@ -13,10 +13,17 @@ import deleteContentDoc from '@salesforce/apex/FileUploadAdvancedHelper.deleteCo
 import getExistingFiles from '@salesforce/apex/FileUploadAdvancedHelper.getExistingFiles';
 import updateFileName from '@salesforce/apex/FileUploadAdvancedHelper.updateFileName';
 
+//labels
+import uxgRemoveFileConfirmation from "@salesforce/label/c.uxg_Remove_File_Confirmation";
+
 //message channels
 import REGISTER_MC from '@salesforce/messageChannel/registrationMessage__c';
 import VALIDATION_MC from '@salesforce/messageChannel/validateMessage__c';
 import VALIDATION_STATE_MC from '@salesforce/messageChannel/validationStateMessage__c';
+
+//constants for spinner labels
+const SPINNER_UPLOADING = 'Uploading...';
+const SPINNER_REMOVING = 'Removing File...';
 
 export default class GovFileUploadEnhanced extends LightningElement {
 
@@ -42,6 +49,10 @@ export default class GovFileUploadEnhanced extends LightningElement {
     numberOfFilesToUpload = 0;
     loading = false;
     disabled = false;
+
+    //accessibility text
+    message = '';
+    spinnerText = SPINNER_UPLOADING;
 
     @api filesUploadedCollection = []; 
     @api filesUploaded; 
@@ -166,7 +177,8 @@ export default class GovFileUploadEnhanced extends LightningElement {
             let objFile = {
                 name: name,
                 documentId: file.documentId,
-                contentVersionId: file.contentVersionId
+                contentVersionId: file.contentVersionId,
+                removeFileAriaLabel: ' file ' + name
             }
 
             objFiles.push(objFile);
@@ -207,7 +219,8 @@ export default class GovFileUploadEnhanced extends LightningElement {
                 name: file.name,
                 filetype: filetype,
                 documentId: file.documentId,
-                contentVersionId: file.contentVersionId
+                contentVersionId: file.contentVersionId,
+                removeFileAriaLabel: ' file ' + file.name
             };
             this.objFiles.push(objFile);
             this.docIds.push(file.documentId);
@@ -250,6 +263,7 @@ export default class GovFileUploadEnhanced extends LightningElement {
 
     deleteDocument(event){
         this.loading = true;
+        this.spinnerText = SPINNER_REMOVING;
         event.target.blur();
 
         let contentVersionId = event.target.dataset.contentversionid;    
@@ -352,6 +366,8 @@ export default class GovFileUploadEnhanced extends LightningElement {
         for(let i=0; i<objFiles.length; i++){
             if(contentVersionId === objFiles[i].contentVersionId){
                 removeIndex = i;
+
+                this.message = uxgRemoveFileConfirmation.replace('{0}', objFiles[i].name);
             }
         }
 
@@ -365,6 +381,9 @@ export default class GovFileUploadEnhanced extends LightningElement {
         this.communicateEvent(this.docIds,this.versIds,this.fileNames,this.objFiles);
 
         this.loading = false;
+
+        //reset spinner text
+        this.spinnerText = SPINNER_UPLOADING;
     }
 
     // LMS functions
