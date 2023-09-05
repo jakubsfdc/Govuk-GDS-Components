@@ -5,7 +5,7 @@
  **/
 import {LightningElement, api, track, wire} from 'lwc';
 import { FlowAttributeChangeEvent } from 'lightning/flowSupport';
-import getPicklistValuesByObjectField from '@salesforce/apex/GovComponentHelper.getPicklistValuesByObjectField';
+import getPicklistValuesMapByObjectField from '@salesforce/apex/GovComponentHelper.getPicklistValuesMapByObjectField';
 import { MessageContext, publish, subscribe, unsubscribe } from 'lightning/messageService';
 import REGISTER_MC from '@salesforce/messageChannel/registrationMessage__c';
 import VALIDATION_MC from '@salesforce/messageChannel/validateMessage__c';
@@ -25,6 +25,7 @@ export default class GovRadios extends LightningElement {
     @api radioLabels = "";
     @api radioValues = "";
     @api selectedValue = "";  
+    @api selectedValueAPIName = "";  
     @api errorMessage;
     
     @track isInitialised = false;
@@ -69,22 +70,44 @@ export default class GovRadios extends LightningElement {
     connectedCallback() {
         if(this.radioPicklistField !== '' && this.radioPicklistField !== undefined && this.radioPicklistField !== null) {
             // get picklist field values
-            getPicklistValuesByObjectField({
+            getPicklistValuesMapByObjectField({
                 strSObjectFieldName: this.radioPicklistField
             })
                 .then(result => {
+                    
                     this.radioOptions = [];
-                    for(let i=0; i<result.length; i++) {
+                    
+                    let i=0;
+
+                    for(const label in result) {
                         let radioOption = {};
                         radioOption.key = `picklist-value-${i}`;
-                        radioOption.value = result[i];
-                        radioOption.label = result[i];
-                        radioOption.checked = (this.selectedValue === result[i]);
+                        radioOption.value = label; 
+                        radioOption.label = label;
+                        radioOption.APIName = result[label];
+                        
+                        radioOption.checked = (this.selectedValue === label); 
+                        
                         this.radioOptions.push(radioOption);
                         if (i==0) {
                             this.radioFieldId = radioOption.key;
                         }
+                        i++;
                     }
+
+                    // for(let i=0; i<result.length; i++) {
+                    //     let radioOption = {};
+                    //     radioOption.key = `picklist-value-${i}`;
+                    //     radioOption.value = result[i];
+                    //     radioOption.label = result[i];
+                    //     radioOption.checked = (this.selectedValue === result[i]);
+                    //     this.radioOptions.push(radioOption);
+                    //     if (i==0) {
+                    //         this.radioFieldId = radioOption.key;
+                    //     }
+                    // }
+
+
                     this.isInitialised = true;
                 })
                 .catch(error => {
@@ -123,10 +146,14 @@ export default class GovRadios extends LightningElement {
     }
 
     handleValueChanged(event) {
+
         this.selectedValue = event.target.value;
+
         this.radioOptions.forEach(radioOption => {
            if(radioOption.value === this.selectedValue) {
                radioOption.checked = true;
+               this.selectedValueAPIName = radioOption.APIName;
+
            } else {
                radioOption.checked = false;
            }
@@ -140,6 +167,7 @@ export default class GovRadios extends LightningElement {
         this.radioOptions.forEach( option => {
             if(option.value === newValue) {
                 option.checked = true;
+                this.selectedValueAPIName = option.APIName;
             } else {
                 option.checked = false;
             }

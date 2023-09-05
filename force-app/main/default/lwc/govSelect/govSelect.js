@@ -5,7 +5,7 @@
  **/
 import {LightningElement, api, track, wire} from 'lwc';
 import { FlowAttributeChangeEvent } from 'lightning/flowSupport';
-import getPicklistValuesByObjectField from '@salesforce/apex/GovComponentHelper.getPicklistValuesByObjectField';
+import getPicklistValuesMapByObjectField from '@salesforce/apex/GovComponentHelper.getPicklistValuesMapByObjectField';
 import { MessageContext, publish, subscribe, unsubscribe } from 'lightning/messageService';
 import REGISTER_MC from '@salesforce/messageChannel/registrationMessage__c';
 import VALIDATION_MC from '@salesforce/messageChannel/validateMessage__c';
@@ -18,6 +18,7 @@ export default class GovSelect extends LightningElement {
     @api hintText;
     @api picklist;
     @api value = "";
+    @api valueAPIName = "";  
     @api isInset;
     @api required;
     @api errorMessage;
@@ -36,7 +37,7 @@ export default class GovSelect extends LightningElement {
     connectedCallback() {
         if(this.picklist !== '' && this.picklist !== undefined && this.picklist !== null) {
             //call the apex to get the values
-            getPicklistValuesByObjectField({
+            getPicklistValuesMapByObjectField({
                 strSObjectFieldName: this.picklist
             })
             .then(result => {
@@ -47,14 +48,29 @@ export default class GovSelect extends LightningElement {
                     selectOption.value = "";
                     this.selectOptions.push(selectOption);
 
-                    for(let i=0; i<result.length; i++) {
+                    let i = 0;
+                    for(const label in result) {
                         let selectOption = {};
                         selectOption.key = `picklist-value-${i}`;
-                        selectOption.value = result[i];
-                        selectOption.label = result[i];
-                        selectOption.selected = (this.value === result[i]);
+                        selectOption.value = label; 
+                        selectOption.label = label;
+                        selectOption.APIName = result[label]; 
+                        
+                        selectOption.selected = (this.value === label); 
+                        
                         this.selectOptions.push(selectOption);
+                        
+                        i++;
                     }
+                    
+                    // for(let i=0; i<result.length; i++) {
+                    //     let selectOption = {};
+                    //     selectOption.key = `picklist-value-${i}`;
+                    //     selectOption.value = result[i];
+                    //     selectOption.label = result[i];
+                    //     selectOption.selected = (this.value === result[i]);
+                    //     this.selectOptions.push(selectOption);
+                    // }
                 })
                 .catch(error => {
                     console.error(`Select:connectedCallback - could not get picklist values due to ${error.message}`);
@@ -124,6 +140,7 @@ export default class GovSelect extends LightningElement {
         this.selectOptions.forEach(selectOption => {
             if(selectOption.value === this.value) {
                 selectOption.selected = true;
+                this.valueAPIName = selectOption.APIName;
             } else {
                 selectOption.selected = false;
             }
@@ -152,6 +169,7 @@ export default class GovSelect extends LightningElement {
         this.selectOptions.forEach( option => {
             if(option.value === newValue) {
                 option.selected = true;
+                this.valueAPIName = selectOption.APIName;
             } else {
                 option.selected = false;
             }
