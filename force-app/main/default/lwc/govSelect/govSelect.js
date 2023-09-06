@@ -154,6 +154,9 @@ export default class GovSelect extends LightningElement {
         const attributeChangeEvent = new FlowAttributeChangeEvent('value', this.value);
         this.dispatchEvent(attributeChangeEvent);
 
+        const attributeChangeEventAPIName = new FlowAttributeChangeEvent('valueAPIName', this.valueAPIName);
+        this.dispatchEvent(attributeChangeEventAPIName);
+
         // tell any parent components about the change
         const valueChangedEvent = new CustomEvent('valuechanged', {
             detail: {

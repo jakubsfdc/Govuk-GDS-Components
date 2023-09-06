@@ -185,8 +185,13 @@ export default class GovRadios extends LightningElement {
 
     dispatchRadioEvent() {
         // tell the flow engine about the change (label value)
-        const attributeChangeEvent = new FlowAttributeChangeEvent('value', this.selectedValue);
+        const attributeChangeEvent = new FlowAttributeChangeEvent('selectedValue', this.selectedValue);
         this.dispatchEvent(attributeChangeEvent);
+
+        const attributeChangeEventAPIName = new FlowAttributeChangeEvent('selectedValueAPIName', this.selectedValueAPIName);
+        this.dispatchEvent(attributeChangeEventAPIName);
+
+        console.log('dispatched FlowAttributeChangeEvent',attributeChangeEventAPIName);
 
         // tell any parent components about the change
         const valueChangedEvent = new CustomEvent('valuechanged', {
