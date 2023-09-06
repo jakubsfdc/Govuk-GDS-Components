@@ -94,20 +94,6 @@ export default class GovRadios extends LightningElement {
                         }
                         i++;
                     }
-
-                    // for(let i=0; i<result.length; i++) {
-                    //     let radioOption = {};
-                    //     radioOption.key = `picklist-value-${i}`;
-                    //     radioOption.value = result[i];
-                    //     radioOption.label = result[i];
-                    //     radioOption.checked = (this.selectedValue === result[i]);
-                    //     this.radioOptions.push(radioOption);
-                    //     if (i==0) {
-                    //         this.radioFieldId = radioOption.key;
-                    //     }
-                    // }
-
-
                     this.isInitialised = true;
                 })
                 .catch(error => {
@@ -198,7 +184,7 @@ export default class GovRadios extends LightningElement {
     }
 
     dispatchRadioEvent() {
-        // tell the flow engine about the change
+        // tell the flow engine about the change (label value)
         const attributeChangeEvent = new FlowAttributeChangeEvent('value', this.selectedValue);
         this.dispatchEvent(attributeChangeEvent);
 
@@ -207,6 +193,7 @@ export default class GovRadios extends LightningElement {
             detail: {
                 id: this.uniqueFieldId,
                 value: this.selectedValue,
+                valueAPIName: this.selectedValueAPIName
             }
         });
         this.dispatchEvent(valueChangedEvent);

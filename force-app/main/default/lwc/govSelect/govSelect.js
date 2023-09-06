@@ -159,6 +159,7 @@ export default class GovSelect extends LightningElement {
             detail: {
                 id: this.fieldId,
                 value: this.value,
+                valueAPIName: this.valueAPIName
             }
         });
         this.dispatchEvent(valueChangedEvent);

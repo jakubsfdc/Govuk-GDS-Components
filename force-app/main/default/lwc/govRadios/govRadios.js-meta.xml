@@ -19,7 +19,7 @@
             <property name="radioPicklistField" type="String" label="Radio Picklist Field"  description="The API name of a picklist to get the labels and values from in the form of SObjectName.FieldName. If standard objects have been renamed, you must use the original API name, for example, if Account has been renamed as Organisation, use Account.Name."/>
             <property name="radioLabels" type="String" label="Radio Labels" description="A comma separated list of labels for the radios. Not required if using Radio Picklist Field."/>
             <property name="radioValues" type="String" label="Radio Values" description="A comma separated list of values for the radios. Not required if using Radio Picklist Field."/>
-            <property name="selectedValue" type="String" label="Selected Value (Label)" description="Input: The default value (label) to display, Output: The value (label) selected"/>
+            <property name="selectedValue" type="String" label="Selected Value (Label)" description="Input: The default value (label) to display, Output: The value (label) selected" />
             <property name="selectedValueAPIName" type="String" label="Selected Value (API Name)" description="Input: The default value (API Name) to display, Output: The value (API Name) selected"/>
             <property name="errorMessage" type="String" label="Error Message" description="Error Message"/>
         </targetConfig>
