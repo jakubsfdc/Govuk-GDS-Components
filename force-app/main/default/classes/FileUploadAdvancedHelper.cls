@@ -30,7 +30,7 @@ public without sharing class FileUploadAdvancedHelper{
                 PathOnClient = '/'+fileName,
                 VersionData = Blob.valueOf(' '),
                 IsMajorVersion = FALSE,
-                Guest_Record_fileupload__c = encodedRecordId
+                uxgovuk__Guest_Record_fileupload__c = encodedRecordId
             );
             versions.add(version);
         }
@@ -74,23 +74,36 @@ public without sharing class FileUploadAdvancedHelper{
     
     @AuraEnabled
     public static void createContentDocLink(List<String> versIds, String encodedKey, Boolean visibleToAllUsers){
-        // System.debug('inside createContentDocLink verIds + count: ' + versIds + versIds.size() + ' encodedKey: '+ encodedKey + 'visibleToAllUsers: ' + visibleToAllUsers);
-        List<ContentDocumentLink> links = new List<ContentDocumentLink>();
-        for(ContentVersion vers : [SELECT Id, ContentDocumentId, Guest_Record_fileupload__c FROM ContentVersion WHERE Id IN :versIds]){
-            ContentDocumentLink link = new ContentDocumentLink(
-            	ContentDocumentId = vers.ContentDocumentId,
-                LinkedEntityId = decrypt(vers.Guest_Record_fileupload__c, encodedKey)
-        	);
-            if(visibleToAllUsers != null){
-                if(visibleToAllUsers){
-                    link.Visibility = 'AllUsers';
+        try {
+            System.debug('inside createContentDocLink verIds + count: ' + versIds + versIds.size() + ' encodedKey: '+ encodedKey + 'visibleToAllUsers: ' + visibleToAllUsers);
+            List<ContentDocumentLink> links = new List<ContentDocumentLink>();
+            for(ContentVersion vers : [SELECT Id, ContentDocumentId, uxgovuk__Guest_Record_fileupload__c FROM ContentVersion WHERE Id IN :versIds]){
+
+                String grf = decrypt(vers.uxgovuk__Guest_Record_fileupload__c, encodedKey);
+                System.debug('uxgovuk__Guest_Record_fileupload__c (decrypted): ' + grf);
+
+                ContentDocumentLink link = new ContentDocumentLink(
+                    ContentDocumentId = vers.ContentDocumentId,
+                    LinkedEntityId = decrypt(vers.uxgovuk__Guest_Record_fileupload__c, encodedKey)
+                );
+                if(visibleToAllUsers != null){
+                    if(visibleToAllUsers){
+                        link.Visibility = 'AllUsers';
+                    }
                 }
+                links.add(link);
+                System.debug('*** link.ContentDocumentIdk: ' + link.ContentDocumentId);
+                System.debug('*** link.LinkedEntityId: ' + link.LinkedEntityId);
             }
-            links.add(link);
+
+            if(!links.isEmpty()){
+                insert links;
+            }
+            
+        } catch (Exception ex) {
+            System.debug('*** Error from createContentDocLink: ' + ex.getMessage());
         }
-        if(!links.isEmpty()){
-            insert links;
-        }
+        
     }
 
     @AuraEnabled
