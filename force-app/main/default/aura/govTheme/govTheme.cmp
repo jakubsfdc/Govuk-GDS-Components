@@ -3,7 +3,7 @@
   <aura:handler name="init" value="{!this}" action="{!c.init}" />
 
   <!-- whether to show or hide the intro section -->
-  <aura:attribute name="showIntroRegion" type="Boolean" default="true"/> 
+  <aura:attribute name="showIntroRegion" type="Boolean" default="true" access="global"/> 
 
   <aura:attribute name="header" type="Aura.Component[]" required="false"  />
   <aura:attribute name="intro" type="Aura.Component[]" required="false"  />

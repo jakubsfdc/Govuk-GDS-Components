@@ -12,8 +12,8 @@
                                 {headingText}
                             </h2>
                         </div>
-                        <div class="govuk-notification-banner__content" >
-                            <p class="govuk-notification-banner__heading">
+                        <div class="govuk-notification-banner__content">
+                            <p class="govuk-notification-banner__heading" aria-label={markdownString}>
                                 <lightning-formatted-rich-text if:true={bodyText} value={bodyText}></lightning-formatted-rich-text>
                             </p>
                         </div>

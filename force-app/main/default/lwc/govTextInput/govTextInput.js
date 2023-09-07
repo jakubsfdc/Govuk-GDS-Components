@@ -10,9 +10,11 @@ import { FlowAttributeChangeEvent } from 'lightning/flowSupport';
 import REGISTER_MC from '@salesforce/messageChannel/registrationMessage__c';
 import VALIDATION_MC from '@salesforce/messageChannel/validateMessage__c';
 import VALIDATION_STATE_MC from '@salesforce/messageChannel/validationStateMessage__c';
+import SET_FOCUS_MC from '@salesforce/messageChannel/setFocusMessage__c';
 
 export default class GovTextInput extends LightningElement {
-    
+    static delegatesFocus = true;
+    // static renderMode = 'light';
     @api fieldId = 'textField';
     @api textFieldId = "input-text";
     @api label = '';
@@ -44,9 +46,12 @@ export default class GovTextInput extends LightningElement {
     // LMS attributes
     @wire(MessageContext) messageContext;
     validateSubscription;
+    setFocusSubscription;
 
     // Lifecycle functions
     connectedCallback() {
+        // console.log('govTextInput.js');
+
         // sets the H value for template based on labele font size  
         this.getHSize(); 
         
@@ -62,6 +67,7 @@ export default class GovTextInput extends LightningElement {
 
         // publish the registration message after 0.1 sec to give other components time to initialise
         setTimeout(() => {
+            // console.log('INSIDE connectedCallback this.textFieldId: '+ this.textFieldId);
             publish(this.messageContext, REGISTER_MC, { componentId: this.textFieldId });
         }, 100);
         
@@ -69,7 +75,10 @@ export default class GovTextInput extends LightningElement {
     }
 
     renderedCallback() {
+        // getting ID of component's field
         this.textFieldId = this.template.querySelector('input').getAttribute('id'); 
+        
+        // inserting hint text and rendering its HTML
         const htmlElement = this.template.querySelector(".html-element");
         if(htmlElement) {
             htmlElement.innerHTML = this.hintText;
@@ -86,8 +95,6 @@ export default class GovTextInput extends LightningElement {
         groupClass = (this.hasErrors) ? groupClass + " govuk-form-group--error" : groupClass;
         return groupClass;
     }
-    
-    
 
     get labelClass() {
         let labelClass;
@@ -122,7 +129,6 @@ export default class GovTextInput extends LightningElement {
         }
         return inputClass;
     }
-
     
     getHSize(){
         if(this.labelFontSize) {
@@ -192,24 +198,59 @@ export default class GovTextInput extends LightningElement {
         if (this.validateSubscription) {
             return;
         }
+        // Report Errors up to govErrorMessages Component
         this.validateSubscription = subscribe (
             this.messageContext,
             VALIDATION_MC, (message) => {
+                // console.log('[govTextInput.js: subscribeMCs] returned form VALIDATION_MC');
                 this.handleValidateMessage(message);
             });
+        
+        // Receive focus request with message.componentId
+        this.setFocusSubscription = subscribe (
+            this.messageContext,
+            SET_FOCUS_MC, (message) => {
+                this.handleSetFocusMessage(message);
+            }
+        )
+        
     }
 
     unsubscribeMCs() {
         unsubscribe(this.validateSubscription);
         this.validateSubscription = null;
+        unsubscribe(this.setFocusSubscription);
+        this.setFocusSubscription = null;
+    }
+
+    handleSetFocusMessage(message){
+        // filter message to check if our component (id) needs to set focus
+        let myComponentId = message.componentId;
+
+        if(myComponentId == this.textFieldId){
+            // console.dir(message);
+            let myComponent = this.template.querySelector('input');
+            // console.log('myComponent: '+ myComponent);
+            // console.log('myComponent: '+ myComponent.id);
+            // console.log('myComponent: '+ myComponent.innerHTML);
+            // console.log('myComponent: '+ myComponent.value);
+            myComponent.focus();
+        }
     }
 
     handleValidateMessage(message) {
+        // console.log('INSIDE: [govTextInput.js: handleValidateMessage]' + message);
+        // console.log('message.componentId: ' + message.componentId);
+        // console.log('message.componentSelect: ' + message.componentSelect);
+        // console.log('message.isValid: ' + message.isValid);
+        // console.log('message.error: ' + message.error);
+        // console.log('message.focusId: ' + message.focusId);
         this.handleValidate();
     }
 
     @api 
     handleValidate() {
+        // console.log('INSIDE: [govTextInput.js: handleValidate]');
         this.hasErrors = false;
         if (this.required && this.value === '') {
             this.hasErrors = true;
@@ -220,12 +261,18 @@ export default class GovTextInput extends LightningElement {
                 }
             }
         }
+        
+        // console.log('[govTextInput.js: handleValidate]');
+        // console.log('handleValidate: '+this.hasErrors);
+        // console.log('this.textFieldId: ' + this.textFieldId);
+        // console.log('this.errorMessage: ' + this.errorMessage);
+
         publish(this.messageContext, VALIDATION_STATE_MC, {
             componentId: this.textFieldId,
-            componentType: 'UXGOVUK-GOV-TEXT-INPUT',
             componentSelect: 'INPUT',
             isValid: !this.hasErrors,
-            error: this.errorMessage
+            error: this.errorMessage,
+            focusId: this.textFieldId
         });
 
         return !this.hasErrors;

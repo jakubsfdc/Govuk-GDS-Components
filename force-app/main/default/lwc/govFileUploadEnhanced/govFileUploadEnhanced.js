@@ -17,9 +17,11 @@ import updateFileName from '@salesforce/apex/FileUploadAdvancedHelper.updateFile
 import REGISTER_MC from '@salesforce/messageChannel/registrationMessage__c';
 import VALIDATION_MC from '@salesforce/messageChannel/validateMessage__c';
 import VALIDATION_STATE_MC from '@salesforce/messageChannel/validationStateMessage__c';
+import SET_FOCUS_MC from '@salesforce/messageChannel/setFocusMessage__c';
 
 export default class GovFileUploadEnhanced extends LightningElement {
 
+    @api inputFieldId = "input-file"
     @track hasErrors        = false;
     @track displayFileList  = false; 
     @track docIds           = [];
@@ -49,6 +51,7 @@ export default class GovFileUploadEnhanced extends LightningElement {
     // messaging attributes
     @wire(MessageContext) messageContext;
     validateSubscription;
+    setFocusSubscription;
 
     key;
     @wire(getKey)
@@ -79,25 +82,29 @@ export default class GovFileUploadEnhanced extends LightningElement {
     }
 
     renderedCallback() {
-
         this.displayExistingFiles();
+       
+        if(this.isCssLoaded) return
+        this.isCssLoaded = true;
         
-                if(this.isCssLoaded) return
-                this.isCssLoaded = true;
-                
-                loadStyle(this,uploadUiOverride).then(()=>{
-                    
-                })
-                .catch(error=>{
-                    this.showErrors(this.reduceErrors(error).toString());
-                });
+        loadStyle(this,uploadUiOverride).then(()=>{
+            
+        })
+        .catch(error=>{
+            this.showErrors(this.reduceErrors(error).toString());
+        });
+    }
+
+
+    handleSetFocusMessage(message){
         
-               
-        
+        const myComponent = this.template.querySelector('a[name="fileUploaderSummaryTitle"]');
+        myComponent.focus();
+
     }
 
     connectedCallback(){
-
+        console.log('*** this.recordId: '+ this.recordId);
         let cachedSelection = sessionStorage.getItem(this.sessionKey);
         if(cachedSelection){
             this.processFiles(JSON.parse(cachedSelection));
@@ -105,6 +112,7 @@ export default class GovFileUploadEnhanced extends LightningElement {
             getExistingFiles({recordId: this.recordId})
                 .then((files) => {
                     if(files != undefined && files.length > 0){
+                        console.log('*** files: ' + files);
                         this.processFiles(files);
                     } else {
                         this.communicateEvent(this.docIds,this.versIds,this.fileNames,this.objFiles);
@@ -125,7 +133,7 @@ export default class GovFileUploadEnhanced extends LightningElement {
 
         // publish the registration message after 0.1 sec to give other components time to initialise
         setTimeout(() => {
-            publish(this.messageContext, REGISTER_MC, {componentId:this.fieldId});
+            publish(this.messageContext, REGISTER_MC, {componentId:this.inputFieldId});
         }, 100);
     }
 
@@ -150,11 +158,14 @@ export default class GovFileUploadEnhanced extends LightningElement {
 
     handleUploadFinished(files) {
         
-
+        console.log('*** files: '+ files);
         let objFiles = [];
         let versIds = [];
 
         files.forEach(file => {
+            console.log('*** file.documentId' + file.documentId);
+            console.log('*** file.contentVersionId' + file.contentVersionId);
+            
 
             let name;
             if(this.overriddenFileName){
@@ -166,8 +177,11 @@ export default class GovFileUploadEnhanced extends LightningElement {
             let objFile = {
                 name: name,
                 documentId: file.documentId,
-                contentVersionId: file.contentVersionId
+                contentVersionId: file.contentVersionId,
+                removeFileAriaDescription: "Remove file" + name
             }
+
+            console.log('*** objFile.removeFileAriaDescription: ' + objFile.removeFileAriaDescription);
 
             objFiles.push(objFile);
 
@@ -181,11 +195,16 @@ export default class GovFileUploadEnhanced extends LightningElement {
                     this.showErrors(this.reduceErrors(error).toString());
                 });
         }
+
+        console.log('*** about to call createContentDocLink({versIds:'+ versIds +', encodedKey:'+ this.key + ', visibleToAllUsers:'+  this.visibleToAllUsers+'})');
         if(this.recordId){
             createContentDocLink({versIds: versIds, encodedKey: this.key, visibleToAllUsers: this.visibleToAllUsers})
-                .catch(error => {
+            .then(result => {
+                console.log('*** createContentDocLink completed: '+ result);
+            })
+            .catch(error => {
                     this.showErrors(this.reduceErrors(error).toString());
-                });
+            });
         }
 
         this.processFiles(objFiles);
@@ -195,7 +214,16 @@ export default class GovFileUploadEnhanced extends LightningElement {
 
     processFiles(files){
         
+        
+
         files.forEach(file => {
+
+            console.log('file.name: '+ file.name);
+            console.log('file.documentId: '+ file.documentId);
+            console.log('file.contentVersionId: '+ file.contentVersionId);
+            console.log('file.versionId: '+ file.versionId);
+            
+
             let filetype;
             if(this.icon == null){
                 filetype = getIconSpecs(file.name.split('.').pop());
@@ -377,15 +405,27 @@ export default class GovFileUploadEnhanced extends LightningElement {
             VALIDATION_MC, (message) => {
                 this.handleValidateMessage(message);
             });
+        
+        // Receive focus request with message.componentId
+        this.setFocusSubscription = subscribe (
+            this.messageContext,
+            SET_FOCUS_MC, (message) => {
+                this.handleSetFocusMessage(message);
+            }
+        )
     }
 
     unsubscribeMCs() {
         unsubscribe(this.validateSubscription);
         this.validateSubscription = null;
+        unsubscribe(this.setFocusSubscription);
+        this.setFocusSubscription = null;
     }
 
     handleValidateMessage(message) {
-        this.handleValidate()
+        console.log('handleValidateMessage: ', message);
+        console.log('handleValidateMessage compid: ', message.componentId);
+        this.handleValidate();
     }
 
     @api handleValidate() {
@@ -396,11 +436,15 @@ export default class GovFileUploadEnhanced extends LightningElement {
         } else {
             this.hasErrors = false;
         }
-
+        console.log('govFileUploadEnhanced: handleValidate');
+        console.log('handleValidate: ', this.hasErrors);
+        console.log('handleValidate: ', this.errorMessage);
+        console.log('handleValidate: ', this.inputFieldId);
         publish(this.messageContext, VALIDATION_STATE_MC, {
-            componentId: this.fieldId,
+            componentId: this.inputFieldId,
             isValid: !this.hasErrors,
-            error: this.errorMessage
+            error: this.errorMessage,
+            focusId: this.inputFieldId
         });
     }
 
