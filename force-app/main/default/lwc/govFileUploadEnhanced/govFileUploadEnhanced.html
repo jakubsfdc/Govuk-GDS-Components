@@ -2,11 +2,11 @@
     <c-gov-c-s-s-provider></c-gov-c-s-s-provider>
     <div class="govuk-width-container js-enabled">
 
-            <p role="status" aria-live="assertive" class="govuk-visually-hidden">
-              {message}
-            </p>
+          <p role="status" aria-live="assertive" class="govuk-visually-hidden">
+            {message}
+          </p>
 
-            <lightning-spinner if:true={loading} alternative-text={spinnerText} size="small"></lightning-spinner>
+            <lightning-spinner if:true={loading} alternative-text="Processing..." size="small"></lightning-spinner>
 
             <lightning-layout multiple-rows="true">
 
@@ -17,10 +17,12 @@
                     <p id="file-upload-1-error" class="govuk-error-message" if:true={hasErrors}>
                         <span class="govuk-visually-hidden">Error:</span>&nbsp;{errorMessage}
                       </p>
+                      <!-- name="upload File" -->
+                    <a href="#" id="fileUploaderSummaryTitle" name="fileUploaderSummaryTitle"></a>
                     <lightning-file-upload
-                            name="upload File"
+                            name="fileUploader"
                             accept={acceptedFormats}
-                            file-field-name='Guest_Record_fileupload__c'
+                            file-field-name='uxgovuk__Guest_Record_fileupload__c'
                             file-field-value={value}
                             onuploadfinished={handleUpload_lightningFile}
                             multiple={allowMultiple}
@@ -42,13 +44,6 @@
                 </lightning-layout-item>
             </div>
          
-            <p>
-              filesUploadedCollection:{filesUploadedCollection}
-            </p>
-            <p>
-              filesUploaded:{filesUploaded}
-            </p>
-
             <div class="govuk-grid-column-full govuk-!-margin-bottom-6">
                 <div class="file-upload--noborder">
                   <dl class="govuk-summary-list">
