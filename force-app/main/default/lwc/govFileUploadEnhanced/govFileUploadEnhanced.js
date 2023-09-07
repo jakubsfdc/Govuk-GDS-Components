@@ -187,7 +187,7 @@ export default class GovFileUploadEnhanced extends LightningElement {
                 removeFileAriaLabel: ' file ' + name
             }
 
-            console.log('*** objFile.removeFileAriaDescription: ' + objFile.removeFileAriaDescription);
+            console.log('*** objFile.removeFileAriaLabel: ' + objFile.removeFileAriaLabel);
 
             objFiles.push(objFile);
 
