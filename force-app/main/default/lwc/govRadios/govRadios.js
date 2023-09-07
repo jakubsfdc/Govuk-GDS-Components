@@ -40,6 +40,7 @@ export default class GovRadios extends LightningElement {
 
 
 
+    
     get groupClass() {
         let groupClass = "govuk-form-group";
         groupClass = (this.hasErrors) ? groupClass + " govuk-form-group--error" : groupClass;
@@ -104,6 +105,7 @@ export default class GovRadios extends LightningElement {
 
     connectedCallback() {
         // sets the H value for template based on labele font size  
+
         this.getHSize(); 
 
         if(this.radioPicklistField !== '' && this.radioPicklistField !== undefined && this.radioPicklistField !== null) {
@@ -133,6 +135,7 @@ export default class GovRadios extends LightningElement {
                         i++;
                     }
                     this.isInitialised = true;
+
                 })
                 .catch(error => {
                     console.error(`Select:connectedCallback - could not get picklist values due to ${error.message}`);
@@ -168,27 +171,37 @@ export default class GovRadios extends LightningElement {
 
     renderedCallback(){
         setTimeout(() => {
-            // getting ID of component's field and setting to pass to govErrorMessage comp
-            let allRadioFieldComps = this.template.querySelectorAll('input[name="'+this.uniqueFieldId+'"]');
-            for(let i=0; i<allRadioFieldComps.length; i++) {
-                // show all properties of single allRadioFieldComps[i]
-                // console.log('allRadioFieldComps[i]: ' + allRadioFieldComps[i]);
-                let radioFieldComp = allRadioFieldComps[i];
-                console.log('radioFieldComp.id: ' + radioFieldComp.id);
-                console.log('radioFieldComp.name: ' + radioFieldComp.name);
-                console.log('radioFieldComp.value: ' + radioFieldComp.value);
-                // console.log('radioFieldComp.checked: ' + radioFieldComp.checked);
-                // console.log('radioFieldComp.type: ' + radioFieldComp.type);
-                // console.log('radioFieldComp.required: ' + radioFieldComp.required);
-                // console.log('radioFieldComp.disabled: ' + radioFieldComp.disabled);
-                // console.log('radioFieldComp.form: ' + radioFieldComp.form);
-                // console.log('radioFieldComp.indeterminate: ' + radioFieldComp.indeterminate);
-                // console.log('   ');
-                // console.log('---');
             
-            }
-            console.log('allRadioFieldComps[0].id: ' + allRadioFieldComps[0].id);
-            this.radioFieldIdForFocus = allRadioFieldComps[0].id;
+                
+            
+                // getting ID of component's field and setting to pass to govErrorMessage comp
+                let allRadioFieldComps = this.template.querySelectorAll('input[name="'+this.uniqueFieldId+'"]');
+
+                console.log('in renderedCallback setTimeout');
+
+                for(let i=0; i<allRadioFieldComps.length; i++) {
+                    // show all properties of single allRadioFieldComps[i]
+                    // console.log('allRadioFieldComps[i]: ' + allRadioFieldComps[i]);
+                    let radioFieldComp = allRadioFieldComps[i];
+                    console.log('radioFieldComp.id: ' + radioFieldComp.id);
+                    console.log('radioFieldComp.name: ' + radioFieldComp.name);
+                    console.log('radioFieldComp.value: ' + radioFieldComp.value);
+                    // console.log('radioFieldComp.checked: ' + radioFieldComp.checked);
+                    // console.log('radioFieldComp.type: ' + radioFieldComp.type);
+                    // console.log('radioFieldComp.required: ' + radioFieldComp.required);
+                    // console.log('radioFieldComp.disabled: ' + radioFieldComp.disabled);
+                    // console.log('radioFieldComp.form: ' + radioFieldComp.form);
+                    // console.log('radioFieldComp.indeterminate: ' + radioFieldComp.indeterminate);
+                    // console.log('   ');
+                    // console.log('---');
+                
+                }
+
+                if(allRadioFieldComps.length > 0){
+                    console.log('allRadioFieldComps[0].id: ' + allRadioFieldComps[0].id);
+                    this.radioFieldIdForFocus = allRadioFieldComps[0].id;
+                }
+           
         }, 100);
     }
 

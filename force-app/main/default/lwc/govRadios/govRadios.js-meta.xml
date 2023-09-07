@@ -6,9 +6,10 @@
     <masterLabel>Gov UK Radios</masterLabel>
     <targets>
         <target>lightning__FlowScreen</target>
+        <target>lightning__AppPage</target>
     </targets>
     <targetConfigs>
-        <targetConfig targets="lightning__FlowScreen">
+        <targetConfig targets="lightning__FlowScreen, lightning__AppPage">
             <property name="uniqueFieldId" type="String" label="Unique Field Id" required="true" default="radioField" description="You must copy the API Name into this field"/>
             <property name="questionLabel" type="String" label="Question Label" description="The label to display"/>
             <property name="questionFontSize" type="String" label="Question Label Font Size" description="Label Font Size - Small, Medium or Large"/>
