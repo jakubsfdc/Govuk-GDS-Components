@@ -104,7 +104,7 @@ export default class GovRadios extends LightningElement {
     setFocusSubscription;
 
     connectedCallback() {
-        // sets the H value for template based on labele font size  
+        // sets the H value for template based on label font size  
 
         this.getHSize(); 
 
@@ -172,32 +172,32 @@ export default class GovRadios extends LightningElement {
     renderedCallback(){
         setTimeout(() => {
             
-                
             
                 // getting ID of component's field and setting to pass to govErrorMessage comp
                 let allRadioFieldComps = this.template.querySelectorAll('input[name="'+this.uniqueFieldId+'"]');
 
-                console.log('in renderedCallback setTimeout');
-
-                for(let i=0; i<allRadioFieldComps.length; i++) {
-                    // show all properties of single allRadioFieldComps[i]
-                    // console.log('allRadioFieldComps[i]: ' + allRadioFieldComps[i]);
-                    let radioFieldComp = allRadioFieldComps[i];
-                    console.log('radioFieldComp.id: ' + radioFieldComp.id);
-                    console.log('radioFieldComp.name: ' + radioFieldComp.name);
-                    console.log('radioFieldComp.value: ' + radioFieldComp.value);
-                    // console.log('radioFieldComp.checked: ' + radioFieldComp.checked);
-                    // console.log('radioFieldComp.type: ' + radioFieldComp.type);
-                    // console.log('radioFieldComp.required: ' + radioFieldComp.required);
-                    // console.log('radioFieldComp.disabled: ' + radioFieldComp.disabled);
-                    // console.log('radioFieldComp.form: ' + radioFieldComp.form);
-                    // console.log('radioFieldComp.indeterminate: ' + radioFieldComp.indeterminate);
-                    // console.log('   ');
-                    // console.log('---');
-                
-                }
-
+                //renderedCallback can be called multiple times, including before/after wire service has returned data (i.e. if picklist field is used)
+                //so only run this when radioOptions populated
                 if(allRadioFieldComps.length > 0){
+
+                    for(let i=0; i<allRadioFieldComps.length; i++) {
+                        // show all properties of single allRadioFieldComps[i]
+                        // console.log('allRadioFieldComps[i]: ' + allRadioFieldComps[i]);
+                        let radioFieldComp = allRadioFieldComps[i];
+                        console.log('radioFieldComp.id: ' + radioFieldComp.id);
+                        console.log('radioFieldComp.name: ' + radioFieldComp.name);
+                        console.log('radioFieldComp.value: ' + radioFieldComp.value);
+                        // console.log('radioFieldComp.checked: ' + radioFieldComp.checked);
+                        // console.log('radioFieldComp.type: ' + radioFieldComp.type);
+                        // console.log('radioFieldComp.required: ' + radioFieldComp.required);
+                        // console.log('radioFieldComp.disabled: ' + radioFieldComp.disabled);
+                        // console.log('radioFieldComp.form: ' + radioFieldComp.form);
+                        // console.log('radioFieldComp.indeterminate: ' + radioFieldComp.indeterminate);
+                        // console.log('   ');
+                        // console.log('---');
+                    
+                    }
+
                     console.log('allRadioFieldComps[0].id: ' + allRadioFieldComps[0].id);
                     this.radioFieldIdForFocus = allRadioFieldComps[0].id;
                 }
