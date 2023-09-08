@@ -40,6 +40,7 @@ export default class GovFileUploadEnhanced extends LightningElement {
     @api required;
     @api requiredMessage;
     @api sessionKey;
+    @api uniqueFieldId = 'fileUploadEnhancedField';
     @api uploadedFileNames;
     @api contentDocumentIds;
     @api contentVersionIds;
@@ -88,6 +89,8 @@ export default class GovFileUploadEnhanced extends LightningElement {
     }
 
     renderedCallback() {
+
+
         this.displayExistingFiles();
        
         if(this.isCssLoaded) return
@@ -111,7 +114,7 @@ export default class GovFileUploadEnhanced extends LightningElement {
 
     connectedCallback(){
         console.log('*** this.recordId: '+ this.recordId);
-        let cachedSelection = sessionStorage.getItem(this.sessionKey);
+        let cachedSelection = sessionStorage.getItem(this.uniqueFieldId + '.files'); 
         if(cachedSelection){
             this.processFiles(JSON.parse(cachedSelection));
         } else if(this.recordId && this.renderExistingFiles) {
@@ -499,6 +502,6 @@ export default class GovFileUploadEnhanced extends LightningElement {
         this.filesUploadedCollection = fileNames;
         this.filesUploaded = fileNames.join(';');
 
-        sessionStorage.setItem(this.sessionKey, JSON.stringify(objFiles));
+        sessionStorage.setItem(this.uniqueFieldId + '.files', JSON.stringify(objFiles));
     }
 }

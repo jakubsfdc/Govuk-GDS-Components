@@ -112,6 +112,7 @@ export default class GovNavigationButtons extends LightningElement {
         // get the action for the data-action attribute
         //var elementToSelect = null;
         this.action = event.target.getAttribute('data-action').toUpperCase();
+
         // check to see if next or finish was selected and we have components to validate
         if( (this.action === 'NEXT' || this.action === 'FINISH') && this.components.length > 0 ) {
             this.components.forEach(component => {
@@ -126,6 +127,7 @@ export default class GovNavigationButtons extends LightningElement {
         } else if(this.action === 'FINISH' && this.availableActions.find(action => action === 'FINISH')) {
             const event = new FlowNavigationFinishEvent();
             this.dispatchEvent(event);
+            this.clearSessionStorage();
         } else if (this.action === 'CANCEL' &&
             (this.availableActions.find(action => action === 'NEXT'))) {
             const event = new FlowNavigationNextEvent();
@@ -133,13 +135,14 @@ export default class GovNavigationButtons extends LightningElement {
         } else if (this.action === 'CANCEL' &&
             (this.availableActions.find(action => action === 'FINISH'))) {
             const event = new FlowNavigationFinishEvent();
+            this.clearSessionStorage();
             this.dispatchEvent(event);
         } else if (this.action === 'BACK' &&
             this.availableActions.find(action => action === 'BACK')) {
             const event = new FlowNavigationBackEvent();
             this.dispatchEvent(event);
         } else {
-            // console.log('NAVIGATION_BUTTONS: No action selected');
+
             if(this.components.length > 0){
                 this.components.forEach(component => {
                     component.isValid = false;
@@ -246,5 +249,10 @@ export default class GovNavigationButtons extends LightningElement {
                  // console.log(`NAVIGATION_BUTTONS: Component ${myComp.id} is invalid.`);
             }
         }
+    }
+
+    clearSessionStorage() {
+        console.log('clearSessionStorage');
+        sessionStorage.clear();
     }
 }

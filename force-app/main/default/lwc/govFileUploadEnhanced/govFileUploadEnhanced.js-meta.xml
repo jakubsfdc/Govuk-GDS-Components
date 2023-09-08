@@ -70,6 +70,7 @@
                 role="inputOnly"
             />
             <property name="errorMessage" type="String" label="Error Message" description="Error Message"/>
+            <property name="uniqueFieldId" type="String" label="Unique Field Id" required="true" default="fileUploadEnhancedField" description="You must copy the API Name into this field"/>
            
         </targetConfig>
     </targetConfigs>
