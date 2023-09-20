@@ -18,6 +18,11 @@ export default class GovNotificationBanner extends LightningElement {
         return (this.successVariant) ? 'govuk-notification-banner govuk-notification-banner--success' : 'govuk-notification-banner';
     }
 
+    get role(){
+
+        return (this.successVariant) ? 'alert' : 'region';
+
+    }
     get markdownString() {
         const parser = new DOMParser();
         const htmlDoc = parser.parseFromString(this.bodyText, 'text/html');
