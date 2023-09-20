@@ -13,6 +13,9 @@ import deleteContentDoc from '@salesforce/apex/FileUploadAdvancedHelper.deleteCo
 import getExistingFiles from '@salesforce/apex/FileUploadAdvancedHelper.getExistingFiles';
 import updateFileName from '@salesforce/apex/FileUploadAdvancedHelper.updateFileName';
 
+//labels
+import uxgRemoveFileConfirmation from "@salesforce/label/c.uxg_Remove_File_Confirmation";
+
 //message channels
 import REGISTER_MC from '@salesforce/messageChannel/registrationMessage__c';
 import VALIDATION_MC from '@salesforce/messageChannel/validateMessage__c';
@@ -37,6 +40,7 @@ export default class GovFileUploadEnhanced extends LightningElement {
     @api required;
     @api requiredMessage;
     @api sessionKey;
+    @api uniqueFieldId = 'fileUploadEnhancedField';
     @api uploadedFileNames;
     @api contentDocumentIds;
     @api contentVersionIds;
@@ -44,6 +48,9 @@ export default class GovFileUploadEnhanced extends LightningElement {
     numberOfFilesToUpload = 0;
     loading = false;
     disabled = false;
+
+    //accessibility text
+    message = '';
 
     @api filesUploadedCollection = []; 
     @api filesUploaded; 
@@ -82,6 +89,8 @@ export default class GovFileUploadEnhanced extends LightningElement {
     }
 
     renderedCallback() {
+
+
         this.displayExistingFiles();
        
         if(this.isCssLoaded) return
@@ -105,7 +114,7 @@ export default class GovFileUploadEnhanced extends LightningElement {
 
     connectedCallback(){
         console.log('*** this.recordId: '+ this.recordId);
-        let cachedSelection = sessionStorage.getItem(this.sessionKey);
+        let cachedSelection = sessionStorage.getItem(this.uniqueFieldId + '.files'); 
         if(cachedSelection){
             this.processFiles(JSON.parse(cachedSelection));
         } else if(this.recordId && this.renderExistingFiles) {
@@ -178,10 +187,10 @@ export default class GovFileUploadEnhanced extends LightningElement {
                 name: name,
                 documentId: file.documentId,
                 contentVersionId: file.contentVersionId,
-                removeFileAriaDescription: "Remove file" + name
+                removeFileAriaLabel: ' file ' + name
             }
 
-            console.log('*** objFile.removeFileAriaDescription: ' + objFile.removeFileAriaDescription);
+            console.log('*** objFile.removeFileAriaLabel: ' + objFile.removeFileAriaLabel);
 
             objFiles.push(objFile);
 
@@ -235,7 +244,8 @@ export default class GovFileUploadEnhanced extends LightningElement {
                 name: file.name,
                 filetype: filetype,
                 documentId: file.documentId,
-                contentVersionId: file.contentVersionId
+                contentVersionId: file.contentVersionId,
+                removeFileAriaLabel: ' file ' + file.name
             };
             this.objFiles.push(objFile);
             this.docIds.push(file.documentId);
@@ -380,6 +390,8 @@ export default class GovFileUploadEnhanced extends LightningElement {
         for(let i=0; i<objFiles.length; i++){
             if(contentVersionId === objFiles[i].contentVersionId){
                 removeIndex = i;
+
+                this.message = uxgRemoveFileConfirmation.replace('{0}', objFiles[i].name);
             }
         }
 
@@ -490,6 +502,6 @@ export default class GovFileUploadEnhanced extends LightningElement {
         this.filesUploadedCollection = fileNames;
         this.filesUploaded = fileNames.join(';');
 
-        sessionStorage.setItem(this.sessionKey, JSON.stringify(objFiles));
+        sessionStorage.setItem(this.uniqueFieldId + '.files', JSON.stringify(objFiles));
     }
 }

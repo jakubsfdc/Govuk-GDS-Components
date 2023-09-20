@@ -2,6 +2,10 @@
     <c-gov-c-s-s-provider></c-gov-c-s-s-provider>
     <div class="govuk-width-container js-enabled">
 
+          <p role="status" aria-live="assertive" class="govuk-visually-hidden">
+            {message}
+          </p>
+
             <lightning-spinner if:true={loading} alternative-text="Processing..." size="small"></lightning-spinner>
 
             <lightning-layout multiple-rows="true">
@@ -27,11 +31,6 @@
                         </lightning-file-upload>
                 </div>                
                 
-                    <div>
-                        
-                        
-                    </div>
-                
             </lightning-layout>
 
 
@@ -55,11 +54,8 @@
                         {objFile.name}
                       </dd>
                       <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="#" onclick={deleteDocument} 
-                        data-documentid={objFile.documentId} 
-                        data-contentversionid={objFile.contentVersionId}
-                        aria-labelledby={objFile.removeFileAriaDescription}>
-                          Remove<span class="govuk-visually-hidden"> file uploaded</span>
+                        <a class="govuk-link" href="#" onclick={deleteDocument} data-documentid={objFile.documentId} data-contentversionid={objFile.contentVersionId}>
+                          Remove<span class="govuk-visually-hidden">{objFile.removeFileAriaLabel}</span>
                         </a>
                       </dd>
                     </div>
@@ -68,9 +64,11 @@
                 </div>
             </div>
 
+            
+
         </div>  
 
-            
+
                  
 
 
@@ -78,4 +76,3 @@
 
     
 </template>
-    
