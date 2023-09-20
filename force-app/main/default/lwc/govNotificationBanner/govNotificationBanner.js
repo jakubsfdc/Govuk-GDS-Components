@@ -9,8 +9,6 @@ export default class GovNotificationBanner extends LightningElement {
     @api headingText;
     @api bodyText;
     @api successVariant = false;
-
-    
    
 
     get successVariantClass(){
@@ -31,5 +29,9 @@ export default class GovNotificationBanner extends LightningElement {
         return bodyElement.innerText;
     }
 
+    get role(){
 
+        return (this.successVariant) ? 'alert' : 'region';
+
+    }
 }

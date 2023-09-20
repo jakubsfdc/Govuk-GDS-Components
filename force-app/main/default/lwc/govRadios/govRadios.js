@@ -5,7 +5,7 @@
  **/
 import {LightningElement, api, track, wire} from 'lwc';
 import { FlowAttributeChangeEvent } from 'lightning/flowSupport';
-import getPicklistValuesByObjectField from '@salesforce/apex/GovComponentHelper.getPicklistValuesByObjectField';
+import getPicklistValuesMapByObjectField from '@salesforce/apex/GovComponentHelper.getPicklistValuesMapByObjectField';
 import { MessageContext, publish, subscribe, unsubscribe } from 'lightning/messageService';
 import REGISTER_MC from '@salesforce/messageChannel/registrationMessage__c';
 import VALIDATION_MC from '@salesforce/messageChannel/validateMessage__c';
@@ -27,6 +27,7 @@ export default class GovRadios extends LightningElement {
     @api radioLabels = "";
     @api radioValues = "";
     @api selectedValue = "";  
+    @api selectedValueAPIName = "";  
     @api errorMessage;
 
     @api h1Size = false;
@@ -39,6 +40,7 @@ export default class GovRadios extends LightningElement {
 
 
 
+    
     get groupClass() {
         let groupClass = "govuk-form-group";
         groupClass = (this.hasErrors) ? groupClass + " govuk-form-group--error" : groupClass;
@@ -102,34 +104,38 @@ export default class GovRadios extends LightningElement {
     setFocusSubscription;
 
     connectedCallback() {
-        // sets the H value for template based on labele font size  
+        // sets the H value for template based on label font size  
+
         this.getHSize(); 
 
         if(this.radioPicklistField !== '' && this.radioPicklistField !== undefined && this.radioPicklistField !== null) {
             // get picklist field values
-            getPicklistValuesByObjectField({
+            getPicklistValuesMapByObjectField({
                 strSObjectFieldName: this.radioPicklistField
             })
                 .then(result => {
-                    console.log(' Fetching Picklist Values !!!!!! result: ' + result);
+                    
                     this.radioOptions = [];
-                    for(let i=0; i<result.length; i++) {
-                        console.log(' !!!!!! result[i]: ' + result[i]);
+                    
+                    let i=0;
+
+                    for(const label in result) {
                         let radioOption = {};
                         radioOption.key = `picklist-value-${i}`;
-                        console.log(' !!!!!! radioOption.key: ' + radioOption.key);
-                        radioOption.value = result[i];
-                        console.log(' !!!!!! radioOption.value: ' + radioOption.value);
-                        radioOption.label = result[i];
-                        console.log(' !!!!!! radioOption.label: ' + radioOption.label);
+                        radioOption.value = label; 
+                        radioOption.label = label;
+                        radioOption.APIName = result[label];
                         
-                        radioOption.checked = (this.selectedValue === result[i]);
+                        radioOption.checked = (this.selectedValue === label); 
+                        
                         this.radioOptions.push(radioOption);
                         if (i==0) {
                             this.radioFieldId = radioOption.key;
                         }
+                        i++;
                     }
                     this.isInitialised = true;
+
                 })
                 .catch(error => {
                     console.error(`Select:connectedCallback - could not get picklist values due to ${error.message}`);
@@ -165,27 +171,37 @@ export default class GovRadios extends LightningElement {
 
     renderedCallback(){
         setTimeout(() => {
-            // getting ID of component's field and setting to pass to govErrorMessage comp
-            let allRadioFieldComps = this.template.querySelectorAll('input[name="'+this.uniqueFieldId+'"]');
-            for(let i=0; i<allRadioFieldComps.length; i++) {
-                // show all properties of single allRadioFieldComps[i]
-                // console.log('allRadioFieldComps[i]: ' + allRadioFieldComps[i]);
-                let radioFieldComp = allRadioFieldComps[i];
-                console.log('radioFieldComp.id: ' + radioFieldComp.id);
-                console.log('radioFieldComp.name: ' + radioFieldComp.name);
-                console.log('radioFieldComp.value: ' + radioFieldComp.value);
-                // console.log('radioFieldComp.checked: ' + radioFieldComp.checked);
-                // console.log('radioFieldComp.type: ' + radioFieldComp.type);
-                // console.log('radioFieldComp.required: ' + radioFieldComp.required);
-                // console.log('radioFieldComp.disabled: ' + radioFieldComp.disabled);
-                // console.log('radioFieldComp.form: ' + radioFieldComp.form);
-                // console.log('radioFieldComp.indeterminate: ' + radioFieldComp.indeterminate);
-                // console.log('   ');
-                // console.log('---');
             
-            }
-            console.log('allRadioFieldComps[0].id: ' + allRadioFieldComps[0].id);
-            this.radioFieldIdForFocus = allRadioFieldComps[0].id;
+            
+                // getting ID of component's field and setting to pass to govErrorMessage comp
+                let allRadioFieldComps = this.template.querySelectorAll('input[name="'+this.uniqueFieldId+'"]');
+
+                //renderedCallback can be called multiple times, including before/after wire service has returned data (i.e. if picklist field is used)
+                //so only run this when radioOptions populated
+                if(allRadioFieldComps.length > 0){
+
+                    for(let i=0; i<allRadioFieldComps.length; i++) {
+                        // show all properties of single allRadioFieldComps[i]
+                        // console.log('allRadioFieldComps[i]: ' + allRadioFieldComps[i]);
+                        let radioFieldComp = allRadioFieldComps[i];
+                        console.log('radioFieldComp.id: ' + radioFieldComp.id);
+                        console.log('radioFieldComp.name: ' + radioFieldComp.name);
+                        console.log('radioFieldComp.value: ' + radioFieldComp.value);
+                        // console.log('radioFieldComp.checked: ' + radioFieldComp.checked);
+                        // console.log('radioFieldComp.type: ' + radioFieldComp.type);
+                        // console.log('radioFieldComp.required: ' + radioFieldComp.required);
+                        // console.log('radioFieldComp.disabled: ' + radioFieldComp.disabled);
+                        // console.log('radioFieldComp.form: ' + radioFieldComp.form);
+                        // console.log('radioFieldComp.indeterminate: ' + radioFieldComp.indeterminate);
+                        // console.log('   ');
+                        // console.log('---');
+                    
+                    }
+
+                    console.log('allRadioFieldComps[0].id: ' + allRadioFieldComps[0].id);
+                    this.radioFieldIdForFocus = allRadioFieldComps[0].id;
+                }
+           
         }, 100);
     }
 
@@ -194,11 +210,13 @@ export default class GovRadios extends LightningElement {
     }
 
     handleValueChanged(event) {
-         console.log('handleValueChanged => event.target.value:' + event.target.value);
         this.selectedValue = event.target.value;
+
         this.radioOptions.forEach(radioOption => {
            if(radioOption.value === this.selectedValue) {
                radioOption.checked = true;
+               this.selectedValueAPIName = radioOption.APIName;
+
            } else {
                radioOption.checked = false;
            }
@@ -212,6 +230,7 @@ export default class GovRadios extends LightningElement {
         this.radioOptions.forEach( option => {
             if(option.value === newValue) {
                 option.checked = true;
+                this.selectedValueAPIName = option.APIName;
             } else {
                 option.checked = false;
             }
@@ -249,16 +268,21 @@ export default class GovRadios extends LightningElement {
     }
 
     dispatchRadioEvent() {
-        console.log('dispatchRadioEvent this.selectedValue'+ this.selectedValue + ' this.uniqueFieldId: ' + this.uniqueFieldId);
-        // tell the flow engine about the change
-        const attributeChangeEvent = new FlowAttributeChangeEvent('value', this.selectedValue);
+        // tell the flow engine about the change (label value)
+        const attributeChangeEvent = new FlowAttributeChangeEvent('selectedValue', this.selectedValue);
         this.dispatchEvent(attributeChangeEvent);
+
+        const attributeChangeEventAPIName = new FlowAttributeChangeEvent('selectedValueAPIName', this.selectedValueAPIName);
+        this.dispatchEvent(attributeChangeEventAPIName);
+
+        console.log('dispatched FlowAttributeChangeEvent',attributeChangeEventAPIName);
 
         // tell any parent components about the change
         const valueChangedEvent = new CustomEvent('valuechanged', {
             detail: {
                 id: this.uniqueFieldId,
                 value: this.selectedValue,
+                valueAPIName: this.selectedValueAPIName
             }
         });
         this.dispatchEvent(valueChangedEvent);

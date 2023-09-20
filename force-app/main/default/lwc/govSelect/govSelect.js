@@ -5,7 +5,7 @@
  **/
 import {LightningElement, api, track, wire} from 'lwc';
 import { FlowAttributeChangeEvent } from 'lightning/flowSupport';
-import getPicklistValuesByObjectField from '@salesforce/apex/GovComponentHelper.getPicklistValuesByObjectField';
+import getPicklistValuesMapByObjectField from '@salesforce/apex/GovComponentHelper.getPicklistValuesMapByObjectField';
 import { MessageContext, publish, subscribe, unsubscribe } from 'lightning/messageService';
 import REGISTER_MC from '@salesforce/messageChannel/registrationMessage__c';
 import VALIDATION_MC from '@salesforce/messageChannel/validateMessage__c';
@@ -20,6 +20,7 @@ export default class GovSelect extends LightningElement {
     @api hintText;
     @api picklist;
     @api value = "";
+    @api valueAPIName = "";  
     @api isInset;
     @api required;
     @api errorMessage;
@@ -44,37 +45,46 @@ export default class GovSelect extends LightningElement {
         this.getHSize(); 
         
         if(this.picklist !== '' && this.picklist !== undefined && this.picklist !== null) {
-            setTimeout(() => {
+        setTimeout(() => {
             //call the apex to get the values
-                getPicklistValuesByObjectField({
-                    strSObjectFieldName: this.picklist
-                })
-                .then(result => {
-                        this.selectOptions = [];
+            getPicklistValuesMapByObjectField({
+                strSObjectFieldName: this.picklist
+            })
+            .then(result => {
+                    this.selectOptions = [];
+                    let selectOption = {};
+                    selectOption.key = `csv-value-no-value`;
+                    selectOption.label = "Please select";
+                    selectOption.value = "";
+                    this.selectOptions.push(selectOption);
+
+                    let i = 0;
+                    for(const label in result) {
                         let selectOption = {};
-                        selectOption.key = `csv-value-no-value`;
-                        selectOption.label = "Please select";
-                        selectOption.value = "";
+                        selectOption.key = `picklist-value-${i}`;
+                        selectOption.value = label; 
+                        selectOption.label = label;
+                        selectOption.APIName = result[label]; 
+                        
+                        selectOption.selected = (this.value === label); 
+                        
                         this.selectOptions.push(selectOption);
-
-                        for(let i=0; i<result.length; i++) {
-                            let selectOption = {};
-                            selectOption.key = `picklist-value-${i}`;
-                            selectOption.value = result[i];
-                            selectOption.label = result[i];
-                            selectOption.selected = (this.value === result[i]);
-
-                            // console.log('selectOption.key:' + selectOption.key);
-                            // console.log('selectOption.value:' + selectOption.value);
-                            // console.log('selectOption.label:' + selectOption.label);
-                            // console.log('selectOption.selected:' + selectOption.selected);
-
-                            this.selectOptions.push(selectOption);
-                        }
-                    })
-                    .catch(error => {
-                        console.error(`Select:connectedCallback - could not get picklist values due to ${error.message}`);
-                    })
+                        
+                        i++;
+                    }
+                    
+                    // for(let i=0; i<result.length; i++) {
+                    //     let selectOption = {};
+                    //     selectOption.key = `picklist-value-${i}`;
+                    //     selectOption.value = result[i];
+                    //     selectOption.label = result[i];
+                    //     selectOption.selected = (this.value === result[i]);
+                    //     this.selectOptions.push(selectOption);
+                    // }
+                })
+                .catch(error => {
+                    console.error(`Select:connectedCallback - could not get picklist values due to ${error.message}`);
+                })
             }, 100);
         } else {
             // use the option labels and option values
@@ -203,6 +213,7 @@ export default class GovSelect extends LightningElement {
         this.selectOptions.forEach(selectOption => {
             if(selectOption.value === this.value) {
                 selectOption.selected = true;
+                this.valueAPIName = selectOption.APIName;
             } else {
                 selectOption.selected = false;
             }
@@ -216,11 +227,15 @@ export default class GovSelect extends LightningElement {
         const attributeChangeEvent = new FlowAttributeChangeEvent('value', this.value);
         this.dispatchEvent(attributeChangeEvent);
 
+        const attributeChangeEventAPIName = new FlowAttributeChangeEvent('valueAPIName', this.valueAPIName);
+        this.dispatchEvent(attributeChangeEventAPIName);
+
         // tell any parent components about the change
         const valueChangedEvent = new CustomEvent('valuechanged', {
             detail: {
                 id: this.fieldId,
                 value: this.value,
+                valueAPIName: this.valueAPIName
             }
         });
         this.dispatchEvent(valueChangedEvent);
@@ -231,6 +246,7 @@ export default class GovSelect extends LightningElement {
         this.selectOptions.forEach( option => {
             if(option.value === newValue) {
                 option.selected = true;
+                this.valueAPIName = selectOption.APIName;
             } else {
                 option.selected = false;
             }
