@@ -3,7 +3,7 @@
     <apiVersion>55.0</apiVersion>
     <description>Shows a header on the community using the default menu to provide links if available</description>
     <isExposed>true</isExposed>
-    <masterLabel>Gov UK Header - Hey Ho!</masterLabel>
+    <masterLabel>Gov UK Header</masterLabel>
     <targets>
         <target>lightningCommunity__Page</target>
         <target>lightningCommunity__Default</target>
