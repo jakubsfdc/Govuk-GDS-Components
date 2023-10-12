@@ -42,6 +42,8 @@ export default class GovDate extends LightningElement {
    @api minDate = "";
    @api maxDate = "";
 
+   @api salesforceDate;
+
    @track dayValue = "";
    @track monthValue = "";
    @track yearValue = "";
@@ -147,6 +149,7 @@ export default class GovDate extends LightningElement {
                 this.monthValue = parts[1];
                 this.yearValue = parts[2];
                 this.formattedDate = this.yearValue + "-" + this.monthValue + "-" + this.dayValue;
+                this.salesforceDate = this.yearValue + "-" + this.monthValue + "-" + this.dayValue + "T0:00:00.000Z";
             }
         }
         // subscribe to the message channels
@@ -200,6 +203,8 @@ export default class GovDate extends LightningElement {
     updateValue() {
         this.value = this.dayValue + "/" + this.monthValue + "/" + this.yearValue;
         this.formattedDate = this.yearValue + "-" + this.monthValue + "-" + this.dayValue;
+
+        this.salesforceDate = this.yearValue + "-" + this.monthValue + "-" + this.dayValue + "T0:00:00.000Z";
         this.dispatchValueChangedEvent();
     }
 
