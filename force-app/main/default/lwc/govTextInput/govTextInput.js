@@ -67,11 +67,12 @@ export default class GovTextInput extends LightningElement {
         // set the char count based on value length
         this.charCount = (this.value) ? this.value.length : 0;
 
-        // publish the registration message after 0.1 sec to give other components time to initialise
-        setTimeout(() => {
-            // console.log('INSIDE connectedCallback this.textFieldId: '+ this.textFieldId);
-            publish(this.messageContext, REGISTER_MC, { componentId: this.textFieldId });
-        }, 100);
+        this.register();
+        // // publish the registration message after 0.1 sec to give other components time to initialise
+        // setTimeout(() => {
+        //     // console.log('INSIDE connectedCallback this.textFieldId: '+ this.textFieldId);
+        //     publish(this.messageContext, REGISTER_MC, { componentId: this.textFieldId });
+        // }, 100);
         
         
     }
@@ -229,6 +230,15 @@ export default class GovTextInput extends LightningElement {
         this.validateSubscription = null;
         unsubscribe(this.setFocusSubscription);
         this.setFocusSubscription = null;
+    }
+
+    //inform subscribers to add this comoponent to the list of component for validation
+    register() {
+        // publish the registration message after 0.1 sec to give other components time to initialise
+        setTimeout(() => {
+            // console.log('INSIDE connectedCallback this.textFieldId: '+ this.textFieldId);
+            publish(this.messageContext, REGISTER_MC, { componentId: this.textFieldId });
+        }, 100);
     }
 
     //inform subscribers that this comoponent is no longer available
