@@ -5,9 +5,10 @@
   * 
  **/
 import { LightningElement, api, track, wire } from 'lwc';
-import { MessageContext, publish, subscribe, unsubscribe } from 'lightning/messageService';
+import { MessageContext, publish, subscribe, unsubscribe, createMessageContext } from 'lightning/messageService';
 import { FlowAttributeChangeEvent } from 'lightning/flowSupport';
 import REGISTER_MC from '@salesforce/messageChannel/registrationMessage__c';
+import UNREGISTER_MC from '@salesforce/messageChannel/unregistrationMessage__c';
 import VALIDATION_MC from '@salesforce/messageChannel/validateMessage__c';
 import VALIDATION_STATE_MC from '@salesforce/messageChannel/validationStateMessage__c';
 import SET_FOCUS_MC from '@salesforce/messageChannel/setFocusMessage__c';
@@ -48,9 +49,10 @@ export default class GovTextInput extends LightningElement {
     validateSubscription;
     setFocusSubscription;
 
+
     // Lifecycle functions
     connectedCallback() {
-        // console.log('govTextInput.js');
+        console.log('govTextInput.js connectedCallback');
 
         // sets the H value for template based on labele font size  
         this.getHSize(); 
@@ -75,6 +77,8 @@ export default class GovTextInput extends LightningElement {
     }
 
     renderedCallback() {
+
+        console.log('govTextInput.js renderedCallback');
         // getting ID of component's field
         this.textFieldId = this.template.querySelector('input').getAttribute('id'); 
         
@@ -87,7 +91,11 @@ export default class GovTextInput extends LightningElement {
     }
 
     disconnectedCallback() {
+        console.log('govTextInput.js disconnectedCallback');
+        
+        this.unregister();
         this.unsubscribeMCs();
+        
     }
 
     get groupClass() {
@@ -223,6 +231,14 @@ export default class GovTextInput extends LightningElement {
         this.setFocusSubscription = null;
     }
 
+    //inform subscribers that this comoponent is no longer available
+    unregister() {
+        console.log('govTextInput: unregister',this.textFieldId);
+
+        //have to create a new message context to unregister
+        publish(createMessageContext(), UNREGISTER_MC, { componentId: this.textFieldId });
+    }
+
     handleSetFocusMessage(message){
         // filter message to check if our component (id) needs to set focus
         let myComponentId = message.componentId;
@@ -250,7 +266,7 @@ export default class GovTextInput extends LightningElement {
 
     @api 
     handleValidate() {
-        // console.log('INSIDE: [govTextInput.js: handleValidate]');
+        console.log('INSIDE: [govTextInput.js: handleValidate]');
         this.hasErrors = false;
         if (this.required && this.value === '') {
             this.hasErrors = true;
@@ -261,7 +277,9 @@ export default class GovTextInput extends LightningElement {
                 }
             }
         }
-        
+
+        console.log('govTextInput.js: handleValidate', this);
+
         // console.log('[govTextInput.js: handleValidate]');
         // console.log('handleValidate: '+this.hasErrors);
         // console.log('this.textFieldId: ' + this.textFieldId);
