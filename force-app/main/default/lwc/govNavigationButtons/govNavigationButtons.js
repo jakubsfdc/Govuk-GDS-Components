@@ -117,6 +117,13 @@ export default class GovNavigationButtons extends LightningElement {
 
 
         console.log('handleClick:: ' + this.action);
+        console.log('Registered Components count: ' + this.components.length);
+        console.dir(this.components);
+        if(this.components.length === 0){
+            console.log('No input components, progress to next.');
+            const event = new FlowNavigationNextEvent();
+            this.dispatchEvent(event);
+        }
 
         // check to see if next or finish was selected and we have components to validate
         if( (this.action === 'NEXT' || this.action === 'FINISH') && this.components.length > 0 ) {
