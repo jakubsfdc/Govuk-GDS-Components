@@ -22,6 +22,7 @@ export default class GovTextArea extends LightningElement {
     @api required;
     @api errorMessage;
     @api fontSize = 'Medium';
+    @api labelFontSize; // OBSOLETE - can't remove form package 
     @api maxCharacterCount = 32768;
     @api showCharacterCount;
     @api rowCount = 5;
