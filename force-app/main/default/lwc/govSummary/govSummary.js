@@ -11,7 +11,7 @@ export default class GovSummary extends LightningElement {
     @api availableActions = []
 
     @api title;
-    label = title // This is to reuse the code from other components that have H1, H2, H3 implemented & cannot change already packaged API
+    label ='';
     @api fontSize = 'Medium';
     @api h1Size = false;
     @api h2Size = false;
@@ -71,6 +71,10 @@ export default class GovSummary extends LightningElement {
 
 
     connectedCallback() {
+        // sets the H value for template based on labele font size  
+        this.getHSize(); 
+        this.label = this.title // This is to reuse the code from other components that have H1, H2, H3 implemented & cannot change already packaged API
+        
         this.sectionFields = [];
         // create the section fields from the collections
         //console.log("Creating fields")
@@ -86,6 +90,7 @@ export default class GovSummary extends LightningElement {
     }
 
     renderedCallback() {
+        
         //insert the instructions HTML
         if(this.instructionsHTML) {
             //console.log(`setting html instructions`);
