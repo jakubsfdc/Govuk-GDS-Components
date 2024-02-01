@@ -21,7 +21,6 @@ export default class GovTextArea extends LightningElement {
     @api characterLimit;
     @api required;
     @api errorMessage;
-    @api labelFontSize;
     @api fontSize = 'Medium';
     @api maxCharacterCount = 32768;
     @api showCharacterCount;
@@ -122,8 +121,8 @@ export default class GovTextArea extends LightningElement {
     }
 
     getHSize(){
-        if(this.labelFontSize) {
-            switch(this.labelFontSize.toLowerCase()) {
+        if(this.fontSize) {
+            switch(this.fontSize.toLowerCase()) {
                 case "small":
                     this.h3Size = true;
                     // labelClass = "govuk-label govuk-label--s";
