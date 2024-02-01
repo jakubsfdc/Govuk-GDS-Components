@@ -11,6 +11,12 @@ export default class GovSummary extends LightningElement {
     @api availableActions = []
 
     @api title;
+    label = title // This is to reuse the code from other components that have H1, H2, H3 implemented & cannot change already packaged API
+    @api fontSize = 'Medium';
+    @api h1Size = false;
+    @api h2Size = false;
+    @api h3Size = false;
+
     @api sectionName;
     @api instructionsHTML;
     @api destination;
@@ -19,6 +25,50 @@ export default class GovSummary extends LightningElement {
     @api confirmationDestinations =[];
 
     sectionFields;
+
+    // Styling
+
+    get labelClass() {
+        let labelClass;
+
+        switch(this.fontSize) {
+            case "Small":
+                labelClass = "govuk-label govuk-label--s";
+                break;
+            case "Medium":
+                labelClass = "govuk-label govuk-label--m";
+                break;
+            case "Large":
+                labelClass = "govuk-label govuk-label--l";
+                break;
+            default:
+                labelClass = "govuk-label govuk-label--s";
+        }
+        return labelClass;
+    }
+
+    getHSize(){
+        if(this.fontSize) {
+            switch(this.fontSize.toLowerCase()) {
+                case "small":
+                    this.h3Size = true;
+                    break;
+                case "medium":
+                    this.h2Size = true;
+                    break;
+                case "large":
+                    this.h1Size = true;
+                    break;
+                default:
+                    this.h3Size = true;
+            }
+        } else {
+            this.h3Size = true;
+        }
+    }
+
+    // end Styling
+
 
     connectedCallback() {
         this.sectionFields = [];
