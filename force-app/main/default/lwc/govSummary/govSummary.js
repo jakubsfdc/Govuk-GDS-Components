@@ -25,6 +25,9 @@ export default class GovSummary extends LightningElement {
     @api confirmationDestinations =[];
 
     sectionFields;
+    getAriaChangeSectionFieldLabel(){
+        return "Change " + this.sectionField.label
+    }
 
     // Styling
 
