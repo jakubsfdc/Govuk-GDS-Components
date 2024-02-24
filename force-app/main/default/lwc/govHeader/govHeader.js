@@ -25,13 +25,20 @@ export default class GovHeader extends NavigationMixin(LightningElement) {
     @api navigationMenuDevName = "Default_Navigation";
     
     @track menuItems = [];
-    @track showMenuInMobile = false;
+    @track showMenuInMobile = false; // used for CSS toggle based on screen size
+    get hasMenuItems() { // used to not display menu section if there is no menu items 
+        return this.menuItems.length > 0;
+    }
   
     connectedCallback() {
         getDefaultMenuItems({
             strNavigationMenuDevName: this.navigationMenuDevName
         })
             .then(menuItems => {
+                console.log("*** menuItems *** ");
+                console.log("menuItems: " + menuItems);
+                console.log("*** ");
+
                 try {
                     // get the page title
                     let urlParts = window.location.href.split("/");
