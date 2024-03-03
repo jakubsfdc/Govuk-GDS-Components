@@ -151,7 +151,7 @@ export default class GovRadios extends LightningElement {
                 radioOption.key = `csv-value-${i}`;
                 radioOption.label = radioLabelsArray[i];
                 radioOption.value = radioValuesArray[i];
-                console.log(' !!!!!! radioValuesArray[i]: ' + radioValuesArray[i]);
+                // console.log(' !!!!!! radioValuesArray[i]: ' + radioValuesArray[i]);
                 radioOption.checked = (this.selectedValue === radioValuesArray[i]);
                 this.radioOptions.push(radioOption);
                 if (i==0) {
@@ -186,9 +186,9 @@ export default class GovRadios extends LightningElement {
                         // show all properties of single allRadioFieldComps[i]
                         // console.log('allRadioFieldComps[i]: ' + allRadioFieldComps[i]);
                         let radioFieldComp = allRadioFieldComps[i];
-                        console.log('radioFieldComp.id: ' + radioFieldComp.id);
-                        console.log('radioFieldComp.name: ' + radioFieldComp.name);
-                        console.log('radioFieldComp.value: ' + radioFieldComp.value);
+                        // console.log('radioFieldComp.id: ' + radioFieldComp.id);
+                        // console.log('radioFieldComp.name: ' + radioFieldComp.name);
+                        // console.log('radioFieldComp.value: ' + radioFieldComp.value);
                         // console.log('radioFieldComp.checked: ' + radioFieldComp.checked);
                         // console.log('radioFieldComp.type: ' + radioFieldComp.type);
                         // console.log('radioFieldComp.required: ' + radioFieldComp.required);
@@ -200,7 +200,7 @@ export default class GovRadios extends LightningElement {
                     
                     }
 
-                    console.log('allRadioFieldComps[0].id: ' + allRadioFieldComps[0].id);
+                    // console.log('allRadioFieldComps[0].id: ' + allRadioFieldComps[0].id);
                     this.radioFieldIdForFocus = allRadioFieldComps[0].id;
                 }
            
@@ -329,7 +329,7 @@ export default class GovRadios extends LightningElement {
 
     //inform subscribers that this comoponent is no longer available
     unregister() {
-        console.log('govRadios: unregister',this.uniqueFieldId);
+        // console.log('govRadios: unregister',this.uniqueFieldId);
 
         //have to create a new message context to unregister
         publish(createMessageContext(), UNREGISTER_MC, { componentId: this.uniqueFieldId });
