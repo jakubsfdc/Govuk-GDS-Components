@@ -52,7 +52,7 @@ export default class GovTextInput extends LightningElement {
 
     // Lifecycle functions
     connectedCallback() {
-        console.log('govTextInput.js connectedCallback');
+        // console.log('govTextInput.js connectedCallback');
 
         // sets the H value for template based on labele font size  
         this.getHSize(); 
@@ -79,7 +79,7 @@ export default class GovTextInput extends LightningElement {
 
     renderedCallback() {
 
-        console.log('govTextInput.js renderedCallback');
+        // console.log('govTextInput.js renderedCallback');
         // getting ID of component's field
         this.textFieldId = this.template.querySelector('input').getAttribute('id'); 
         
@@ -92,7 +92,7 @@ export default class GovTextInput extends LightningElement {
     }
 
     disconnectedCallback() {
-        console.log('govTextInput.js disconnectedCallback');
+        // console.log('govTextInput.js disconnectedCallback');
         
         this.unregister();
         this.unsubscribeMCs();
