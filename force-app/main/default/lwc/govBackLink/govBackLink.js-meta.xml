@@ -3,7 +3,7 @@
     <apiVersion>55.0</apiVersion>
     <isExposed>true</isExposed>
     <description>A back link that will navigate to the supplied page if no flow back action is possible.</description>
-    <masterLabel>Gov UK Back Link</masterLabel>
+    <masterLabel>Gov UK Back Link SOURCE</masterLabel>
     <targets>
         <target>lightningCommunity__Page</target>
         <target>lightningCommunity__Default</target>
