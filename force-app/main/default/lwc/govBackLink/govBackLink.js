@@ -48,36 +48,22 @@ export default class GovBackLink extends NavigationMixin(LightningElement) {
         // TODO: may have to remove the listener at some point so it doesn’t fire on every tab
         document.addEventListener('keydown', (event) => { 
             if (event.key === 'Tab') {
-                // console.log('Tab A codes.activeElement:' + codes.activeElement);
-                // console.log('*** TAB Pressed *** ');
                 this.setBacklinkAttributeToZero();
-                console.log('*** after setBacklinkAttributeToZero run *** ');
-                console.log('Tab B codes.activeElement:' + codes.activeElement);
             }
         });
 
-        console.log("Before moving focus one tabindex up:");
-        var codes = this.template.querySelector('.govuk-back-link')
-        console.log("tabindex: ", codes.attributes["tabindex"]);
         
-        var timsId = this.template.querySelector('.backlink-skiplink-focuspoint');
-        console.log('timsId: ', timsId);
-        console.log('timsId.attributes: ', timsId.attributes);
-        timsId.focus();
-        console.log('TimsId element focused? template.activeElement:' + template.activeElement);
+        var codes = this.template.querySelector('.govuk-back-link')
+        
+        
+        var focusH1Tag = this.template.querySelector('.backlink-skiplink-focuspoint');
+        
+        focusH1Tag.focus();
 
-        console.log('BEFORE nextElementByTabIndex : codes.activeElement:' + codes.activeElement);
         codes.nextElementByTabIndex.focus();
         codes.nextElementByTabIndex.focus();
         codes.nextElementByTabIndex.focus();
         codes.nextElementByTabIndex.focus();
-        console.log('AFTER nextElementByTabIndex : codes.activeElement:' + codes.activeElement);
-        console.log("After moving focus one tabindex up:");
-
-       
-         
-
-       
        
     }
 
