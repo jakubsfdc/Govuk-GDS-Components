@@ -1,7 +1,7 @@
 /**
  * Component Name: Gov UK Markup Text Editor
  * Derived_From_Frontend_Version:v3.13.1
- * Created by: Simon Cook Updated by Neetesh Jain/Brenda Campbell
+ * Created by: Simon Cook Updated by Neetesh Jain/Brenda Campbell, Jakub Szelagowski
  **/
 import { LightningElement,api } from 'lwc';
 
@@ -41,6 +41,12 @@ export default class GovMarkupTextEditor extends LightningElement {
         // insert the heading tag
         const textArea = this.template.querySelector(".markupTextarea");
         this.insertTags(textArea,"<h2 class='govuk-heading-l'>","</h2>");
+    }
+
+    handleInsertMainHeader(event) {
+        // insert the heading tag
+        const textArea = this.template.querySelector(".markupTextarea");
+        this.insertTags(textArea,"<h1 class='backlink-skiplink-focuspoint'>","</h1>");
     }
 
     handleInsertBody(event) {

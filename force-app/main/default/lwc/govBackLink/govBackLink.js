@@ -23,21 +23,22 @@ export default class GovBackLink extends NavigationMixin(LightningElement) {
     }
 
     setBacklinkAttributeToZero(){
-        console.log("renderedCallBack");
+        // console.log("renderedCallBack");
         var codes = this.template.querySelector('.govuk-back-link')
-        console.log('*** codes: ' + codes);
-        console.dir(codes);
-        console.log('*** after dir *** ');
+        // console.log('*** codes: ' + codes);
+        // console.log("tabindex: ", codes.attributes["tabindex"]);
+        // console.dir(codes);
+        // console.log('*** after dir *** ');
             
 
         // set tabindex of codes to 0 to make it accessible by tabbing
         if (codes) {
             codes.setAttribute('tabindex', '0');
         }
-        console.log('*** after setAttribute *** ');
-        console.dir(codes);
-        
-        console.log('*** after setAttribute tabindex dir *** ');
+        // console.log('*** after setAttribute *** ');
+        // console.log("tabindex: ", codes.attributes["tabindex"]);
+        // console.dir(codes);
+        // console.log('*** after setAttribute tabindex dir *** ');
          // console.log('Index set to 0 on govuk-back-link:' + codes[0].getAttribute['tabindex']);
     }
 
@@ -47,11 +48,33 @@ export default class GovBackLink extends NavigationMixin(LightningElement) {
         // TODO: may have to remove the listener at some point so it doesn’t fire on every tab
         document.addEventListener('keydown', (event) => { 
             if (event.key === 'Tab') {
-                console.log('*** TAB Pressed *** ');
+                // console.log('Tab A template.activeElement:' + template.activeElement);
+                // console.log('*** TAB Pressed *** ');
                 this.setBacklinkAttributeToZero();
-                console.log('*** after setBacklinkAttributeToZero run *** ');
+                // console.log('*** after setBacklinkAttributeToZero run *** ');
+                // console.log('Tab B template.activeElement:' + template.activeElement);
             }
         });
+
+        // console.log("Before moving focus one tabindex up:");
+        // var codes = this.template.querySelector('.govuk-back-link')
+        // console.log("tabindex: ", codes.attributes["tabindex"]);
+        
+        var focusPointComponent = this.template.querySelector('.backlink-skiplink-focuspoint');
+        // console.log('focusPointComponent: ', focusPointComponent);
+        // console.log('focusPointComponent.attributes: ', focusPointComponent.attributes);
+        focusPointComponent.focus();
+        // console.log('focusPointComponent element focused? template.activeElement:' + template.activeElement);
+
+        // console.log('BEFORE nextElementByTabIndex : template.activeElement:' + template.activeElement);
+        // codes.nextElementByTabIndex.focus();
+        // codes.nextElementByTabIndex.focus();
+        // codes.nextElementByTabIndex.focus();
+        // codes.nextElementByTabIndex.focus();
+        // console.log('AFTER nextElementByTabIndex : template.activeElement:' + template.activeElement);
+        // console.log("After moving focus one tabindex up:");
+
+       
          
 
        
