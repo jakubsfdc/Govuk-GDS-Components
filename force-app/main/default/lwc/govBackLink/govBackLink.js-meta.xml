@@ -14,6 +14,7 @@
             <property name="backLinkLabel" type="String" label="Back Link Label" default="Back" description="Label for back link"/>
             <property name="backAction" type="Boolean" label="Perform Flow Back Action" description="If true will perform a flow back action if possible and is only applicable to Flow Builder."/>
             <property name="destinationPageName" type="String" label="Destination Page" description="The HTML/Community Page API where we have to navigate and is only applicable to Experience Builder"/>
+            <property name="headerLabel" type="String" label="Header Label" description="Main H1 heading for the page "/>
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
