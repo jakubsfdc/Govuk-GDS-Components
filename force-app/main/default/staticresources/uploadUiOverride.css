@@ -1,6 +1,9 @@
 span.slds-file-selector__button, span.slds-button span.slds-button_neutral{
     /* background-color: aqua; */
     width: 200px;
+    height: 32px;
+    padding: 4px;
+    font-size: 1rem;
 }
 
 
